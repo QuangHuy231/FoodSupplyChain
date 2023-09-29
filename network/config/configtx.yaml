@@ -1,0 +1,208 @@
+Organizations:
+  - &Orderer
+    Name: Orderer
+    ID: OrdererMSP
+    MSPDir: /home/huy/TTTN/FoodSupplyChain/network/Info/MSPOrderer
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('OrdererMSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('OrdererMSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('OrdererMSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('OrdererMSP.member')"
+  - &Producer
+    Name: Producer
+    ID: ProducerMSP
+    MSPDir: /home/huy/TTTN/FoodSupplyChain/network/Info/MSPProducer
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('ProducerMSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('ProducerMSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('ProducerMSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('ProducerMSP.member')"
+  - &Processor
+    Name: Processor
+    ID: ProcessorMSP
+    MSPDir: /home/huy/TTTN/FoodSupplyChain/network/Info/MSPProcessor
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('ProcessorMSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('ProcessorMSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('ProcessorMSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('ProcessorMSP.member')"
+
+  - &Distributor
+    Name: Distributor
+    ID: DistributorMSP
+    MSPDir: /home/huy/TTTN/FoodSupplyChain/network/Info/MSPDistributor
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('DistributorMSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('DistributorMSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('DistributorMSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('DistributorMSP.member')"
+
+  - &Intermediate
+    Name: Intermediate
+    ID: IntermediateMSP
+    MSPDir: /home/huy/TTTN/FoodSupplyChain/network/Info/MSPIntermediate
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('IntermediateMSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('IntermediateMSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('IntermediateMSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('IntermediateMSP.member')"
+
+  - &Consumer
+    Name: Consumer
+    ID: ConsumerMSP
+    MSPDir: /home/huy/TTTN/FoodSupplyChain/network/Info/MSPConsumer
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('ConsumerMSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('ConsumerMSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('ConsumerMSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('ConsumerMSP.member')"
+
+Capabilities:
+  Channel: &ChannelCapabilities
+    V2_0: true
+  Orderer: &OrdererCapabilities
+    V2_0: true
+  Application: &ApplicationCapabilities
+    V2_5: true
+
+Application: &ApplicationDefaults
+  Organizations:
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+    LifecycleEndorsement:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Endorsement"
+    Endorsement:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Endorsement"
+
+  Capabilities:
+    <<: *ApplicationCapabilities
+Orderer: &OrdererDefaults
+  OrdererType: etcdraft
+  Addresses:
+    - orderer1.example.com:7050
+    - orderer2.example.com:8050
+    - orderer3.example.com:9050
+  EtcdRaft:
+    Consenters:
+      - Host: orderer1.example.com
+        Port: 7050
+        ClientTLSCert: /home/huy/TTTN/FoodSupplyChain/network/Orderer/Orderer1/tls/signcerts/cert.pem
+        ServerTLSCert: /home/huy/TTTN/FoodSupplyChain/network/Orderer/Orderer1/tls/signcerts/cert.pem
+      - Host: orderer2.example.com
+        Port: 8050
+        ClientTLSCert: /home/huy/TTTN/FoodSupplyChain/network/Orderer/Orderer2/tls/signcerts/cert.pem
+        ServerTLSCert: /home/huy/TTTN/FoodSupplyChain/network/Orderer/Orderer2/tls/signcerts/cert.pem
+      - Host: orderer3.example.com
+        Port: 9050
+        ClientTLSCert: /home/huy/TTTN/FoodSupplyChain/network/Orderer/Orderer3/tls/signcerts/cert.pem
+        ServerTLSCert: /home/huy/TTTN/FoodSupplyChain/network/Orderer/Orderer3/tls/signcerts/cert.pem
+  BatchTimeout: 2s
+  BatchSize:
+    MaxMessageCount: 10
+    AbsoluteMaxBytes: 99 MB
+    PreferredMaxBytes: 512 KB
+  Organizations:
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+    BlockValidation:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+
+Channel: &ChannelDefaults
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+
+  Capabilities:
+    <<: *ChannelCapabilities
+
+Profiles:
+  FoodSupplyChainApplicationGenesis:
+    <<: *ChannelDefaults
+    Orderer:
+      <<: *OrdererDefaults
+      Organizations:
+        - *Orderer
+      Capabilities: *OrdererCapabilities
+    Application:
+      <<: *ApplicationDefaults
+      Organizations:
+        - *Producer
+        - *Processor
+        - *Distributor
+        - *Intermediate
+        - *Consumer
+      Capabilities: *ApplicationCapabilities
