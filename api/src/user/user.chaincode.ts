@@ -10,8 +10,18 @@ export class UserChaincode {
       true,
       false,
       false,
-      'user1Producer',
+      false,
+      'user2Producer',
     );
-    return this.fabricService.query(network, 'QueryProduct');
+    return this.fabricService.invoke(
+      network,
+      'createUser',
+      '4',
+      'huy',
+      'nguyenquanghuya3kd@gmail.com',
+      'Famer',
+      'BinhDinh',
+      '2311',
+    );
   }
 }

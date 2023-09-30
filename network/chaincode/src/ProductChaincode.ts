@@ -6,12 +6,13 @@ import { User } from './User';
 @Info({ title: 'SupplyChainContract', description: 'Smart Contract for Supply Chain' })
 export class SupplyChainContract extends Contract {
     @Transaction()
-    public async createUser(ctx: Context,userID: string, userName: string, email: string, userType: string, address: string, password: string): Promise<void> {
+    public async createUser(ctx: Context,userID: string, userName: string, email: string, userType: string, address: string, password: string): Promise<string> {
         const user = new User(userID, userName, email, userType, address, password)
 
         await ctx.stub.putState(userID, Buffer.from(JSON.stringify(user)));
 
         ctx.stub.setEvent('createUser', Buffer.from(JSON.stringify(user)));
+        return "Successfully created"
     }
 
     @Transaction()

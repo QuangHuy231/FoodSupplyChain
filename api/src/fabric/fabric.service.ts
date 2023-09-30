@@ -1,37 +1,55 @@
 import { Injectable } from '@nestjs/common';
 import { Gateway, Wallets } from 'fabric-network';
-import FabricCAClient from 'fabric-ca-client';
+import * as FabricCAClient from 'fabric-ca-client';
 import * as path from 'path';
 import * as fs from 'fs';
 
 const famerCcpPath = path.join(
   process.cwd(),
-  './src/fabric/ccp/connection-producer.json',
+  './src/fabric/ccp/connection-famer.json',
 );
 const famerCcpFile = fs.readFileSync(famerCcpPath, 'utf8');
 const famerCcp = JSON.parse(famerCcpFile);
 
-// const producerCcpPath = path.join(process.cwd(), );
-// const producerCcpFile = fs.readFileSync(producerCcpPath, 'utf8');
-// const producerCcp = JSON.parse(producerCcpFile);
+const producerCcpPath = path.join(
+  process.cwd(),
+  './src/fabric/ccp/connection-producer.json',
+);
+const producerCcpFile = fs.readFileSync(producerCcpPath, 'utf8');
+const producerCcp = JSON.parse(producerCcpFile);
 
-// const consumerCcpPath = path.join(process.cwd(), process.env.CONSUMER_CONN);
-// const consumerCcpFile = fs.readFileSync(consumerCcpPath, 'utf8');
-// const consumerCcp = JSON.parse(consumerCcpFile);
+const transportationCcpPath = path.join(
+  process.cwd(),
+  './src/fabric/ccp/connection-transportation.json',
+);
+const transportationCcpFile = fs.readFileSync(transportationCcpPath, 'utf8');
+const transportationCcp = JSON.parse(transportationCcpFile);
+
+const retailerCcpPath = path.join(
+  process.cwd(),
+  './src/fabric/ccp/connection-retailer.json',
+);
+const retailerCcpFile = fs.readFileSync(retailerCcpPath, 'utf8');
+const retailerCcp = JSON.parse(retailerCcpFile);
 
 @Injectable()
 export class FabricService {
   async connect(
-    isManufacturer: boolean,
-    isMiddleMen: boolean,
-    isConsumer: boolean,
+    isFamer: boolean,
+    isProducer: boolean,
+    isTransportation: boolean,
+    isRetailer: boolean,
     userID: string,
   ) {
     const gateway = new Gateway();
 
     try {
-      const { walletPath, connection, orgMSPID, caURL } =
-        this.getConnectionMaterial(isManufacturer, isMiddleMen, isConsumer);
+      const { walletPath, connection } = this.getConnectionMaterial(
+        isFamer,
+        isProducer,
+        isTransportation,
+        isRetailer,
+      );
 
       const wallet = await Wallets.newFileSystemWallet(walletPath);
       const userExists = await wallet.get(userID);
@@ -91,14 +109,12 @@ export class FabricService {
     try {
       console.log(`Invoke parameter: ${funcAndArgs}`);
       const funcAndArgsStrings = funcAndArgs.map((elem) => String(elem));
-      console.log(funcAndArgsStrings);
       const response = await networkObj.contract.submitTransaction(
         ...funcAndArgsStrings,
       );
-      console.log(response.toString());
       console.log(`Transaction ${funcAndArgs} has been submitted: ${response}`);
 
-      return JSON.parse(response.toString());
+      return response.toString();
     } catch (err) {
       console.error(`Failed to submit transaction: ${err}`);
       return { status: 500, error: err.toString() };
@@ -110,15 +126,17 @@ export class FabricService {
   }
 
   async enrollAdmin(
-    isManufacturer: boolean,
-    isMiddleMen: boolean,
-    isConsumer: boolean,
+    isFamer: boolean,
+    isProducer: boolean,
+    isTransportation: boolean,
+    isRetailer: boolean,
   ) {
     try {
-      const { walletPath, orgMSPID, caURL } = this.getConnectionMaterial(
-        isManufacturer,
-        isMiddleMen,
-        isConsumer,
+      const { walletPath, caURL, orgMSPID } = this.getConnectionMaterial(
+        isFamer,
+        isProducer,
+        isTransportation,
+        isRetailer,
       );
 
       const wallet = await Wallets.newFileSystemWallet(walletPath);
@@ -127,7 +145,6 @@ export class FabricService {
         console.error('Admin user identity already exists in the wallet');
         return;
       }
-
       const ca = new FabricCAClient(caURL);
       const enrollment = await ca.enroll({
         enrollmentID: 'admin',
@@ -138,7 +155,7 @@ export class FabricService {
           certificate: enrollment.certificate,
           privateKey: enrollment.key.toBytes(),
         },
-        mspId: 'admin',
+        mspId: orgMSPID,
         type: 'X.509',
       };
       await wallet.put('admin', x509Identity);
@@ -151,17 +168,106 @@ export class FabricService {
     }
   }
 
+  async registerUser(
+    isFamer: boolean,
+    isProducer: boolean,
+    isTransportation: boolean,
+    isRetailer: boolean,
+    userID: string,
+  ) {
+    try {
+      const { walletPath, orgMSPID, caURL } = this.getConnectionMaterial(
+        isFamer,
+        isProducer,
+        isTransportation,
+        isRetailer,
+      );
+
+      const wallet = await Wallets.newFileSystemWallet(walletPath);
+      const userExists = await wallet.get(userID);
+      if (userExists) {
+        console.error(
+          `An identity for the user ${userID} already exists in the wallet`,
+        );
+        return {
+          status: 400,
+          error: 'User identity already exists in the wallet.',
+        };
+      }
+
+      let adminIdentity = await wallet.get('admin');
+      if (!adminIdentity) {
+        console.log(
+          'An identity for the admin user "admin" does not exist in the wallet',
+        );
+        await this.enrollAdmin(
+          isFamer,
+          isProducer,
+          isTransportation,
+          isRetailer,
+        );
+        adminIdentity = await wallet.get('admin');
+        console.log('Admin Enrolled Successfully');
+      }
+      const ca = new FabricCAClient(caURL);
+
+      const provider = wallet
+        .getProviderRegistry()
+        .getProvider(adminIdentity.type);
+      const adminUser = await provider.getUserContext(adminIdentity, 'admin');
+      let secret;
+      try {
+        secret = await ca.register(
+          {
+            affiliation: 'org1.department1',
+            enrollmentID: userID,
+            role: 'client',
+          },
+          adminUser,
+        );
+      } catch (err) {
+        return err.message;
+      }
+
+      const enrollment = await ca.enroll({
+        enrollmentID: userID,
+        enrollmentSecret: secret,
+      });
+      const x509Identity = {
+        credentials: {
+          certificate: enrollment.certificate,
+          privateKey: enrollment.key.toBytes(),
+        },
+        mspId: orgMSPID,
+        type: 'X.509',
+      };
+
+      await wallet.put(userID, x509Identity);
+
+      console.log(
+        `Successfully registered user. Use userID ${userID} to log in`,
+      );
+
+      return x509Identity;
+    } catch (err) {
+      console.error(`Failed to register user ${userID}: ${err}`);
+      return { status: 500, error: err.toString() };
+    }
+  }
+
   async checkUserExists(
-    isManufacturer: boolean,
-    isMiddleMen: boolean,
-    isConsumer: boolean,
+    isFamer: boolean,
+    isProducer: boolean,
+    isTransportation: boolean,
+    isRetailer: boolean,
     userID: string,
   ) {
     try {
       const { walletPath } = this.getConnectionMaterial(
-        isManufacturer,
-        isMiddleMen,
-        isConsumer,
+        isFamer,
+        isProducer,
+        isTransportation,
+        isRetailer,
       );
       const wallet = await Wallets.newFileSystemWallet(walletPath);
       const userExists = await wallet.get(userID);
@@ -173,39 +279,52 @@ export class FabricService {
   }
 
   private getConnectionMaterial(
-    isManufacturer: boolean,
-    isMiddleMen: boolean,
-    isConsumer: boolean,
+    isFamer: boolean,
+    isProducer: boolean,
+    isTransportation: boolean,
+    isRetailer: boolean,
   ) {
     const connectionMaterial: any = {};
 
-    if (isManufacturer) {
-      connectionMaterial.walletPath = path.join(process.cwd(), './wallet');
+    if (isFamer) {
+      connectionMaterial.walletPath = path.join(
+        process.cwd(),
+        './famer-wallet',
+      );
       connectionMaterial.connection = famerCcp;
       connectionMaterial.orgMSPID = 'ProducerMSP';
       connectionMaterial.caURL = 'https://localhost:7054';
     }
 
-    // if (isMiddleMen) {
-    //   connectionMaterial.walletPath = path.join(
-    //     process.cwd(),
-    //     process.env.MIDDLEMEN_WALLET,
-    //   );
-    //   connectionMaterial.connection = producerCcp;
-    //   connectionMaterial.orgMSPID = process.env.MIDDLEMEN_MSP;
-    //   connectionMaterial.caURL = process.env.MIDDLEMEN_CA_ADDR;
-    // }
+    if (isProducer) {
+      connectionMaterial.walletPath = path.join(
+        process.cwd(),
+        './producer-wallet',
+      );
+      connectionMaterial.connection = producerCcp;
+      connectionMaterial.orgMSPID = 'ProcessorMSP';
+      connectionMaterial.caURL = 'https://localhost:8054';
+    }
 
-    // if (isConsumer) {
-    //   console.log(process.env.CONSUMER_WALLET);
-    //   connectionMaterial.walletPath = path.join(
-    //     process.cwd(),
-    //     process.env.CONSUMER_WALLET,
-    //   );
-    //   connectionMaterial.connection = consumerCcp;
-    //   connectionMaterial.orgMSPID = process.env.CONSUMER_MSP;
-    //   connectionMaterial.caURL = process.env.CONSUMER_CA_ADDR;
-    // }
+    if (isTransportation) {
+      connectionMaterial.walletPath = path.join(
+        process.cwd(),
+        './transportation-wallet',
+      );
+      connectionMaterial.connection = transportationCcp;
+      connectionMaterial.orgMSPID = 'DistributorMSP';
+      connectionMaterial.caURL = 'https://localhost:9054';
+    }
+
+    if (isRetailer) {
+      connectionMaterial.walletPath = path.join(
+        process.cwd(),
+        './retailer-wallet',
+      );
+      connectionMaterial.connection = retailerCcp;
+      connectionMaterial.orgMSPID = 'ConsumerMSP';
+      connectionMaterial.caURL = 'https://localhost:10054';
+    }
 
     return connectionMaterial;
   }
