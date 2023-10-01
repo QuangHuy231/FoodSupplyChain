@@ -39,7 +39,7 @@ export class FabricService {
     isProducer: boolean,
     isTransportation: boolean,
     isRetailer: boolean,
-    userID: string,
+    userId: string,
   ) {
     const gateway = new Gateway();
 
@@ -52,10 +52,10 @@ export class FabricService {
       );
 
       const wallet = await Wallets.newFileSystemWallet(walletPath);
-      const userExists = await wallet.get(userID);
+      const userExists = await wallet.get(userId);
       if (!userExists) {
         console.error(
-          `An identity for the user ${userID} does not exist in the wallet. Register ${userID} first`,
+          `An identity for the user ${userId} does not exist in the wallet. Register ${userId} first`,
         );
         return {
           status: 401,
@@ -65,7 +65,7 @@ export class FabricService {
 
       await gateway.connect(connection, {
         wallet,
-        identity: userID,
+        identity: userId,
         discovery: {
           enabled: true,
           asLocalhost: true,
@@ -89,19 +89,16 @@ export class FabricService {
     try {
       console.log(`Query parameter: ${funcAndArgs}`);
       const funcAndArgsStrings = funcAndArgs.map((elem) => String(elem));
+      console.log(funcAndArgsStrings);
       const response = await networkObj.contract.evaluateTransaction(
         ...funcAndArgsStrings,
       );
       console.log(`Transaction ${funcAndArgs} has been evaluated: ${response}`);
 
-      return JSON.parse(response.toString());
+      return response;
     } catch (err) {
       console.error(`Failed to evaluate transaction: ${err}`);
       return { status: 500, error: err.toString() };
-    } finally {
-      if (networkObj.gateway) {
-        await networkObj.gateway.disconnect();
-      }
     }
   }
 
@@ -114,14 +111,10 @@ export class FabricService {
       );
       console.log(`Transaction ${funcAndArgs} has been submitted: ${response}`);
 
-      return response.toString();
+      return response;
     } catch (err) {
       console.error(`Failed to submit transaction: ${err}`);
       return { status: 500, error: err.toString() };
-    } finally {
-      if (networkObj.gateway) {
-        await networkObj.gateway.disconnect();
-      }
     }
   }
 
@@ -173,7 +166,7 @@ export class FabricService {
     isProducer: boolean,
     isTransportation: boolean,
     isRetailer: boolean,
-    userID: string,
+    userId: string,
   ) {
     try {
       const { walletPath, orgMSPID, caURL } = this.getConnectionMaterial(
@@ -184,10 +177,10 @@ export class FabricService {
       );
 
       const wallet = await Wallets.newFileSystemWallet(walletPath);
-      const userExists = await wallet.get(userID);
+      const userExists = await wallet.get(userId);
       if (userExists) {
         console.error(
-          `An identity for the user ${userID} already exists in the wallet`,
+          `An identity for the user ${userId} already exists in the wallet`,
         );
         return {
           status: 400,
@@ -220,7 +213,7 @@ export class FabricService {
         secret = await ca.register(
           {
             affiliation: 'org1.department1',
-            enrollmentID: userID,
+            enrollmentID: userId,
             role: 'client',
           },
           adminUser,
@@ -230,7 +223,7 @@ export class FabricService {
       }
 
       const enrollment = await ca.enroll({
-        enrollmentID: userID,
+        enrollmentID: userId,
         enrollmentSecret: secret,
       });
       const x509Identity = {
@@ -242,15 +235,15 @@ export class FabricService {
         type: 'X.509',
       };
 
-      await wallet.put(userID, x509Identity);
+      await wallet.put(userId, x509Identity);
 
       console.log(
-        `Successfully registered user. Use userID ${userID} to log in`,
+        `Successfully registered user. Use userName ${userId} to log in`,
       );
 
       return x509Identity;
     } catch (err) {
-      console.error(`Failed to register user ${userID}: ${err}`);
+      console.error(`Failed to register user ${userId}: ${err}`);
       return { status: 500, error: err.toString() };
     }
   }
@@ -260,7 +253,7 @@ export class FabricService {
     isProducer: boolean,
     isTransportation: boolean,
     isRetailer: boolean,
-    userID: string,
+    userId: string,
   ) {
     try {
       const { walletPath } = this.getConnectionMaterial(
@@ -270,10 +263,10 @@ export class FabricService {
         isRetailer,
       );
       const wallet = await Wallets.newFileSystemWallet(walletPath);
-      const userExists = await wallet.get(userID);
+      const userExists = await wallet.get(userId);
       return userExists !== null;
     } catch (err) {
-      console.error(`Failed to check user exists ${userID}: ${err}`);
+      console.error(`Failed to check user exists ${userId}: ${err}`);
       return { status: 500, error: err.toString() };
     }
   }

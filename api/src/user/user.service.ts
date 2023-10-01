@@ -1,11 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { UserChaincode } from './user.chaincode';
+import { FabricService } from 'src/fabric/fabric.service';
 
 @Injectable()
 export class UserService {
-  constructor(private userChaincode: UserChaincode) {}
+  constructor(private fabricService: FabricService) {}
 
-  getAllUsers() {
-    return this.userChaincode.getAllUsers();
+  async getAllUsers() {
+    const network = await this.fabricService.connect(
+      true,
+      false,
+      false,
+      false,
+      'User43',
+    );
+    return this.fabricService.query(network, 'getCounter', 'UserCounterNO');
   }
 }
