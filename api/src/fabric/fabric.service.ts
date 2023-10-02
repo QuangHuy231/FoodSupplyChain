@@ -97,8 +97,7 @@ export class FabricService {
 
       return response;
     } catch (err) {
-      console.error(`Failed to evaluate transaction: ${err}`);
-      return { status: 500, error: err.toString() };
+      throw new Error(err.toString());
     }
   }
 
@@ -113,8 +112,7 @@ export class FabricService {
 
       return response;
     } catch (err) {
-      console.error(`Failed to submit transaction: ${err}`);
-      return { status: 500, error: err.toString() };
+      throw new Error(err.toString());
     }
   }
 

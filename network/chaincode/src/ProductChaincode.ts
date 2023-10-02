@@ -106,7 +106,7 @@ export class SupplyChainContract extends Contract {
 
     ctx.stub.setEvent("createUser", Buffer.from(JSON.stringify(user)));
 
-    return userId;
+    return userId.toString();
   }
 
   @Transaction()
@@ -125,8 +125,7 @@ export class SupplyChainContract extends Contract {
     userName: string,
     email: string,
     userType: string,
-    address: string,
-    password: string
+    address: string
   ): Promise<void> {
     const userString = await ctx.stub.getState(userId);
 
@@ -136,11 +135,10 @@ export class SupplyChainContract extends Contract {
 
     const user = JSON.parse(userString.toString());
 
-    user.userName = userName;
-    user.email = email;
-    user.userType = userType;
-    user.address = address;
-    user.password = password;
+    user.UserName = userName;
+    user.Email = email;
+    user.UserType = userType;
+    user.Address = address;
 
     // Lưu sản phẩm vào ledger
     await ctx.stub.putState(userId, Buffer.from(JSON.stringify(user)));

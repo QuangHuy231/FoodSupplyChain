@@ -19,7 +19,7 @@ export class AuthService {
     return hash;
   }
 
-  public async generateToken(payload: { id: string }) {
+  public async generateToken(payload: { UserId: string; UserType: string }) {
     const accessToken = await this.jwtService.signAsync(payload);
 
     return accessToken;
@@ -38,7 +38,7 @@ export class AuthService {
       );
     }
     if (registerUserDto.UserType === 'Producer') {
-      await this.fabricService.enrollAdmin(true, false, false, false);
+      await this.fabricService.enrollAdmin(false, true, false, false);
       network = await this.fabricService.connect(
         false,
         true,
@@ -48,7 +48,7 @@ export class AuthService {
       );
     }
     if (registerUserDto.UserType === 'Transportation') {
-      await this.fabricService.enrollAdmin(true, false, false, false);
+      await this.fabricService.enrollAdmin(false, false, true, false);
       network = await this.fabricService.connect(
         false,
         false,
@@ -58,7 +58,7 @@ export class AuthService {
       );
     }
     if (registerUserDto.UserType === 'Retailer') {
-      await this.fabricService.enrollAdmin(true, false, false, false);
+      await this.fabricService.enrollAdmin(false, false, false, true);
       network = await this.fabricService.connect(
         false,
         false,
@@ -115,11 +115,45 @@ export class AuthService {
       );
     }
 
-    return `Create User with userId: ${userId.toString()}`;
+    throw new HttpException(
+      'Create User successfully: ' + userId,
+      HttpStatus.OK,
+    );
   }
 
   async login(loginUserDto: LoginUserDto) {
     let network;
+    if (loginUserDto.userType === 'Administrator') {
+      await this.fabricService.enrollAdmin(true, false, false, false);
+
+      network = await this.fabricService.connect(
+        true,
+        false,
+        false,
+        false,
+        loginUserDto.userId,
+      );
+      const user = await this.fabricService.query(
+        network,
+        'queryUserInfo',
+        loginUserDto.userId,
+      );
+
+      const userInfo = JSON.parse(user);
+
+      if (!userInfo) {
+        throw new HttpException('User not found', HttpStatus.UNAUTHORIZED);
+      }
+
+      const isPasswordMatching = loginUserDto.password === userInfo.Password;
+      if (!isPasswordMatching) {
+        throw new HttpException('Invalid password', HttpStatus.UNAUTHORIZED);
+      }
+      return await this.generateToken({
+        UserId: userInfo.UserId,
+        UserType: userInfo.UserType,
+      });
+    }
     if (loginUserDto.userType === 'Famer') {
       network = await this.fabricService.connect(
         true,
@@ -176,6 +210,9 @@ export class AuthService {
       throw new HttpException('Invalid password', HttpStatus.UNAUTHORIZED);
     }
 
-    return await this.generateToken(userInfo.UserId);
+    return await this.generateToken({
+      UserId: userInfo.UserId,
+      UserType: userInfo.UserType,
+    });
   }
 }
