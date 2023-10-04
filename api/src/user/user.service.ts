@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { FabricService } from 'src/fabric/fabric.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { throwError } from 'rxjs';
 import { QueryUserTypeDTO } from './dto/query-user-follow-usertype.dto';
 
 @Injectable()
@@ -10,7 +9,8 @@ export class UserService {
 
   private async connect(userType: string, userId: string) {
     let network;
-    if (userType === 'Famer') {
+
+    if (userType === 'Famer' || userType === 'admin') {
       network = await this.fabricService.connect(
         true,
         false,
@@ -59,7 +59,7 @@ export class UserService {
         userId,
       );
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+      throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
     }
 
     const userInfo = JSON.parse(userInfoString);
@@ -68,15 +68,11 @@ export class UserService {
     return otherInfo;
   }
 
-  async updateUserInfo(
-    userId: string,
-    updateUserDto: UpdateUserDto,
-    user: any,
-  ) {
-    const network = await this.connect(user.UserType, user.UserId);
+  async updateUserInfo(userId: string, updateUserDto: UpdateUserDto) {
+    const network = await this.connect('Famer', 'admin');
 
     try {
-      await this.fabricService.invoke(
+      const result = await this.fabricService.invoke(
         network,
         'updateUser',
         userId,
@@ -85,19 +81,24 @@ export class UserService {
         updateUserDto.UserType,
         updateUserDto.Address,
       );
-      throw new HttpException('Update Success', HttpStatus.OK);
+      return JSON.parse(result);
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+      throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
     }
   }
 
-  async deleteUser(userId: string, user: any) {
-    const network = await this.connect(user.UserType, user.UserId);
+  async deleteUser(userId: string) {
+    const network = await this.connect('Famer', 'admin');
+
     try {
-      await this.fabricService.invoke(network, 'deleteUser', userId);
-      throw new HttpException('Delete Success', HttpStatus.OK);
+      const result = await this.fabricService.invoke(
+        network,
+        'deleteUser',
+        userId,
+      );
+      return JSON.parse(result);
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+      throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
     }
   }
 

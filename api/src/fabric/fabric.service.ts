@@ -86,34 +86,26 @@ export class FabricService {
   }
 
   async query(networkObj: any, ...funcAndArgs: string[]) {
-    try {
-      console.log(`Query parameter: ${funcAndArgs}`);
-      const funcAndArgsStrings = funcAndArgs.map((elem) => String(elem));
-      console.log(funcAndArgsStrings);
-      const response = await networkObj.contract.evaluateTransaction(
-        ...funcAndArgsStrings,
-      );
-      console.log(`Transaction ${funcAndArgs} has been evaluated: ${response}`);
+    console.log(`Query parameter: ${funcAndArgs}`);
+    const funcAndArgsStrings = funcAndArgs.map((elem) => String(elem));
+    console.log(funcAndArgsStrings);
+    const response = await networkObj.contract.evaluateTransaction(
+      ...funcAndArgsStrings,
+    );
+    console.log(`Transaction ${funcAndArgs} has been evaluated: ${response}`);
 
-      return response;
-    } catch (err) {
-      throw new Error(err.toString());
-    }
+    return response;
   }
 
   async invoke(networkObj: any, ...funcAndArgs: string[]) {
-    try {
-      console.log(`Invoke parameter: ${funcAndArgs}`);
-      const funcAndArgsStrings = funcAndArgs.map((elem) => String(elem));
-      const response = await networkObj.contract.submitTransaction(
-        ...funcAndArgsStrings,
-      );
-      console.log(`Transaction ${funcAndArgs} has been submitted: ${response}`);
+    console.log(`Invoke parameter: ${funcAndArgs}`);
+    const funcAndArgsStrings = funcAndArgs.map((elem) => String(elem));
+    const response = await networkObj.contract.submitTransaction(
+      ...funcAndArgsStrings,
+    );
+    console.log(`Transaction ${funcAndArgs} has been submitted: ${response}`);
 
-      return response;
-    } catch (err) {
-      throw new Error(err.toString());
-    }
+    return response;
   }
 
   async enrollAdmin(

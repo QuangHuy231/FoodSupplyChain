@@ -9,9 +9,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from '../guard/auth.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { QueryUserTypeDTO } from './dto/query-user-follow-usertype.dto';
+import { AdminGuard } from 'src/guard/admin.guard';
 
 @Controller('user')
 export class UserController {
@@ -25,21 +26,18 @@ export class UserController {
     return this.userService.getUserInfo(userId, user);
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(AdminGuard)
   @Put(':id')
   updateUserInfo(
     @Param('id') userId: string,
     @Body() updateUserDto: UpdateUserDto,
-    @Req() req: any,
   ) {
-    const user = req.user;
-    return this.userService.updateUserInfo(userId, updateUserDto, user);
+    return this.userService.updateUserInfo(userId, updateUserDto);
   }
-  @UseGuards(AuthGuard)
+  @UseGuards(AdminGuard)
   @Delete(':id')
-  deleteUser(@Param('id') userId: string, @Req() req: any) {
-    const user = req.user;
-    return this.userService.deleteUser(userId, user);
+  deleteUser(@Param('id') userId: string) {
+    return this.userService.deleteUser(userId);
   }
 
   @UseGuards(AuthGuard)

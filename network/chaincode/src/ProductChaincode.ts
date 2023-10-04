@@ -50,11 +50,11 @@ export class SupplyChainContract extends Contract {
   }
 
   @Transaction()
-  public async getCounter(ctx: Context, assetType: string): Promise<number> {
+  public async getCounter(ctx: Context, assetType: string): Promise<string> {
     const counterAsBytes = await ctx.stub.getState(assetType);
     if (!counterAsBytes || counterAsBytes.length === 0) {
       // Trả về 0 nếu không tìm thấy giá trị của bộ đếm
-      return 0;
+      return JSON.stringify(0);
     }
 
     const counterAsset = JSON.parse(counterAsBytes.toString());
@@ -65,7 +65,7 @@ export class SupplyChainContract extends Contract {
       `Counter Current Value ${counterValue} of Asset Type ${assetType}`
     );
 
-    return counterValue;
+    return counterValue.toString();
   }
 
   @Transaction()
@@ -99,7 +99,7 @@ export class SupplyChainContract extends Contract {
     password: string
   ) {
     const number = await this.incrementCounter(ctx, "UserCounterNO");
-    const userId = `User${number}`;
+    const userId = `${userType}${number}`;
     const user = new User(userId, userName, email, userType, address, password);
 
     await ctx.stub.putState(userId, Buffer.from(JSON.stringify(user)));
@@ -113,7 +113,7 @@ export class SupplyChainContract extends Contract {
   public async queryUserInfo(ctx: Context, userId: string): Promise<any> {
     const userJSON = await ctx.stub.getState(userId);
     if (!userJSON || userJSON.length === 0) {
-      throw new Error(`The User ${userId} does not exist`);
+      throw new Error("User not found");
     }
     return userJSON.toString();
   }
@@ -126,11 +126,11 @@ export class SupplyChainContract extends Contract {
     email: string,
     userType: string,
     address: string
-  ): Promise<void> {
+  ): Promise<string> {
     const userString = await ctx.stub.getState(userId);
 
-    if (!userString) {
-      throw new Error(`The User ${userId} does not exist`);
+    if (!userString || userString.length === 0) {
+      throw new Error("User not found");
     }
 
     const user = JSON.parse(userString.toString());
@@ -145,15 +145,22 @@ export class SupplyChainContract extends Contract {
 
     // Kích hoạt sự kiện "UpdateProductByProducer" để thông báo rằng sản phẩm đã được cập nhật
     ctx.stub.setEvent("updateUser", Buffer.from(JSON.stringify(user)));
+    return JSON.stringify({
+      message: "Update User Successfully",
+    });
   }
 
   @Transaction()
-  public async deleteUser(ctx: Context, userId: string): Promise<void> {
+  public async deleteUser(ctx: Context, userId: string): Promise<string> {
     const userExists = await ctx.stub.getState(userId);
-    if (!userExists) {
-      throw new Error(`User with code ${userId} does not exist`);
+    if (!userExists || userExists.length === 0) {
+      throw new Error("User not found");
     }
+
     await ctx.stub.deleteState(userId);
+    return JSON.stringify({
+      message: "Delete User Successfully",
+    });
   }
 
   @Transaction()
@@ -190,13 +197,12 @@ export class SupplyChainContract extends Contract {
   @Transaction()
   public async CreateProduct(
     ctx: Context,
-    productCode: string,
     productName: string,
     farmerId: string,
     plantDate: string,
     harvestDate: string,
     images: string
-  ): Promise<void> {
+  ): Promise<string> {
     const userBytes = await ctx.stub.getState(farmerId);
 
     if (!userBytes || userBytes.length === 0) {
@@ -209,11 +215,8 @@ export class SupplyChainContract extends Contract {
     if (user.UserType !== "Famer") {
       throw new Error("User type must be Famer");
     }
-    // Kiểm tra xem sản phẩm đã tồn tại hay chưa
-    const productExists = await this.productExists(ctx, productCode);
-    if (productExists) {
-      throw new Error(`Product with code ${productCode} already exists`);
-    }
+    const number = await this.incrementCounter(ctx, "ProductCounterNO");
+    const productCode = `Product${number}`;
     const product = new Product(
       productCode,
       productName,
@@ -222,11 +225,16 @@ export class SupplyChainContract extends Contract {
       harvestDate,
       images
     );
+
     // Lưu sản phẩm vào ledger
     await ctx.stub.putState(productCode, Buffer.from(JSON.stringify(product)));
 
     // Kích hoạt sự kiện "CreateProduct" để thông báo rằng sản phẩm đã được tạo
     ctx.stub.setEvent("CreateProduct", Buffer.from(JSON.stringify(product)));
+
+    return JSON.stringify({
+      message: "Product created successfully",
+    });
   }
 
   @Transaction()
@@ -549,9 +557,9 @@ export class SupplyChainContract extends Contract {
   private async productExists(
     ctx: Context,
     productCode: string
-  ): Promise<boolean> {
+  ): Promise<string> {
     const productBuffer = await ctx.stub.getState(productCode);
-    return !!productBuffer && productBuffer.length > 0;
+    return JSON.stringify(!!productBuffer && productBuffer.length > 0);
   }
 
   @Transaction()
