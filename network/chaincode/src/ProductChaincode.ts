@@ -195,6 +195,33 @@ export class SupplyChainContract extends Contract {
   }
 
   @Transaction()
+  public async getAllUsers(ctx: Context) {
+    const users = [];
+    const query = {
+      selector: {
+        docType: "User",
+      },
+    };
+    const iterator = await ctx.stub.getQueryResult(JSON.stringify(query));
+    let result = await iterator.next();
+    while (!result.done) {
+      const strValue = Buffer.from(result.value.value.toString()).toString(
+        "utf8"
+      );
+      let record;
+      try {
+        record = JSON.parse(strValue);
+      } catch (err) {
+        console.log(err);
+        record = strValue;
+      }
+      users.push(record);
+      result = await iterator.next();
+    }
+    return JSON.stringify(users);
+  }
+
+  @Transaction()
   public async CreateProduct(
     ctx: Context,
     productName: string,
@@ -203,8 +230,7 @@ export class SupplyChainContract extends Contract {
     harvestDate: string,
     images: string
   ): Promise<string> {
-    const userBytes = await ctx.stub.getState(farmerId);
-
+    const userBytes = await this.queryUserInfo(ctx, farmerId);
     if (!userBytes || userBytes.length === 0) {
       throw new Error("Cannot find user with FamerId");
     }
@@ -277,10 +303,10 @@ export class SupplyChainContract extends Contract {
     famerId: string,
     productCode: string,
     producerId: string
-  ): Promise<void> {
-    const productString = await this.QueryProduct(ctx, productCode);
+  ): Promise<string> {
+    const productString = await ctx.stub.getState(productCode);
 
-    if (!productString) {
+    if (!productString || productString.length === 0) {
       throw new Error(`The part ${productCode} does not exist`);
     }
 
@@ -290,7 +316,7 @@ export class SupplyChainContract extends Contract {
       throw new Error("Cannot find Producer");
     }
 
-    const product = JSON.parse(productString);
+    const product = JSON.parse(productString.toString());
 
     if (product.famerId !== famerId) {
       throw new Error("User does not have permission");
@@ -307,6 +333,10 @@ export class SupplyChainContract extends Contract {
       "TransferProductToProducer",
       Buffer.from(JSON.stringify(product))
     );
+
+    return JSON.stringify({
+      message: "Transfer Product To Producer Successfully",
+    });
   }
 
   @Transaction()
@@ -352,15 +382,15 @@ export class SupplyChainContract extends Contract {
     expirationDate: string,
     productionSteps: string,
     images: string
-  ): Promise<void> {
+  ): Promise<string> {
     // Kiểm tra xem sản phẩm đã tồn tại hay không
-    const productString = await this.QueryProduct(ctx, productCode);
+    const productExists = await ctx.stub.getState(productCode);
 
-    if (!productString) {
+    if (!productExists || productExists.length === 0) {
       throw new Error(`The part ${productCode} does not exist`);
     }
 
-    const product = JSON.parse(productString);
+    const product = JSON.parse(productExists.toString());
 
     if (product.producerId !== producerId) {
       throw new Error("User does not have permissions");
@@ -380,6 +410,8 @@ export class SupplyChainContract extends Contract {
       "UpdateProductByProducer",
       Buffer.from(JSON.stringify(product))
     );
+
+    return JSON.stringify({ message: "Update Product By Producer Success" });
   }
 
   @Transaction()
@@ -422,18 +454,24 @@ export class SupplyChainContract extends Contract {
     producerId: string,
     productCode: string,
     transportationId: string
-  ): Promise<void> {
+  ): Promise<string> {
     // Kiểm tra xem sản phẩm đã tồn tại hay không
-    const productString = await this.QueryProduct(ctx, productCode);
+    const productExists = await ctx.stub.getState(productCode);
 
-    if (!productString) {
+    if (!productExists || productExists.length === 0) {
       throw new Error(`The part ${productCode} does not exist`);
     }
 
-    const product = JSON.parse(productString);
+    const product = JSON.parse(productExists.toString());
 
     if (product.producerId !== producerId) {
       throw new Error("User does not have permissions");
+    }
+
+    const transportation = await ctx.stub.getState(transportationId);
+
+    if (!transportation || transportation.length === 0) {
+      throw new Error("Cannot find transportation");
     }
 
     product.transportationId = transportationId;
@@ -446,6 +484,9 @@ export class SupplyChainContract extends Contract {
       "TransferProductToTransporter",
       Buffer.from(JSON.stringify(product))
     );
+    return JSON.stringify({
+      message: "Transfer Product To Transporter successfully",
+    });
   }
 
   @Transaction()
@@ -490,16 +531,21 @@ export class SupplyChainContract extends Contract {
     retailerId: string,
     vehicle: string
   ): Promise<void> {
-    // Kiểm tra xem sản phẩm đã tồn tại hay không
-    const productString = await this.QueryProduct(ctx, productCode);
-
-    if (!productString) {
-      throw new Error(`The part ${productCode} does not exist`);
+    const productExists = await ctx.stub.getState(productCode);
+    if (!productExists || productExists.length === 0) {
+      throw new Error("Product not found");
     }
 
-    const product = JSON.parse(productString);
+    const product = JSON.parse(productExists.toString());
+
     if (product.transportationId !== transportationId) {
       throw new Error("User does not have permission");
+    }
+
+    const retailer = await ctx.stub.getState(retailerId);
+
+    if (!retailer || retailer.length === 0) {
+      throw new Error("Cannot find Retailer");
     }
 
     // Cập nhật thông tin nhà bán lẻ
@@ -563,13 +609,17 @@ export class SupplyChainContract extends Contract {
   }
 
   @Transaction()
-  public async deleteProduct(ctx: Context, productCode: string): Promise<void> {
-    const productExists = await this.productExists(ctx, productCode);
-    if (!productExists) {
+  public async deleteProduct(
+    ctx: Context,
+    productCode: string
+  ): Promise<string> {
+    const productExists = await ctx.stub.getState(productCode);
+    if (!productExists || productExists.length === 0) {
       throw new Error(`Product with code ${productCode} does not exist`);
     }
 
     await ctx.stub.deleteState(productCode);
+    return JSON.stringify({ message: "Delete Successfully" });
   }
 
   @Transaction()
@@ -585,33 +635,32 @@ export class SupplyChainContract extends Contract {
   }
 
   @Transaction()
-  public async GetAllProducts(ctx: Context): Promise<string[]> {
+  public async GetAllProducts(ctx: Context): Promise<string> {
     const allProducts = [];
 
     // Lập trình truy vấn tất cả sản phẩm
-    const iterator = await ctx.stub.getStateByPartialCompositeKey(
-      "Product",
-      []
-    );
+    const query = {
+      selector: {
+        docType: "Product",
+      },
+    };
+    const iterator = await ctx.stub.getQueryResult(JSON.stringify(query));
     let result = await iterator.next();
-
     while (!result.done) {
       const strValue = Buffer.from(result.value.value.toString()).toString(
         "utf8"
       );
-      let product;
+      let record;
       try {
-        product = JSON.parse(strValue);
+        record = JSON.parse(strValue);
       } catch (err) {
-        console.error(err);
-        product = strValue;
+        console.log(err);
+        record = strValue;
       }
-
-      allProducts.push(product);
+      allProducts.push(record);
       result = await iterator.next();
     }
-
-    return allProducts;
+    return JSON.stringify(allProducts);
   }
 
   @Transaction()
@@ -622,6 +671,10 @@ export class SupplyChainContract extends Contract {
   ): Promise<string> {
     const allHistory = [];
 
+    const productExists = await ctx.stub.getState(productCode);
+    if (!productExists || productExists.length === 0) {
+      throw new Error("Product not found");
+    }
     // Lấy lịch sử cho sản phẩm dựa trên khóa chính (productCode)
     const iterator = await ctx.stub.getHistoryForKey(productCode);
     let result = await iterator.next();

@@ -1,36 +1,39 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Req,
-  UseGuards,
-  UsePipes,
-  ValidationPipe,
-} from '@nestjs/common';
-import { CreateProductDto } from './dto/create-product.dto';
+import { Controller, Delete, Get, Param, Req, UseGuards } from '@nestjs/common';
+
 import { ProductService } from './product.service';
 
-import { FamerGuard } from 'src/guard/famer.guard';
+import { AuthGuard } from 'src/guard/auth.guard';
+import { AdminGuard } from 'src/guard/admin.guard';
 
 @Controller('product')
 export class ProductController {
   constructor(private productService: ProductService) {}
-  @UsePipes(ValidationPipe)
-  @UseGuards(FamerGuard)
-  @Post()
-  async createProduct(
-    @Body() createProductDto: CreateProductDto,
-    @Req() req: any,
-  ) {
+
+  @UseGuards(AuthGuard)
+  @Get(':id')
+  async queryProduct(@Param('id') productId: string, @Req() req: any) {
     const user = req.user;
-    return this.productService.createProduct(createProductDto, user);
+    return this.productService.queryProduct(productId, user);
   }
 
-  @UseGuards(FamerGuard)
-  @Get('/famer/product-created')
-  async productCreated(@Req() req: any) {
+  @UseGuards(AdminGuard)
+  @Delete(':id')
+  async deleteProduct(@Param('id') productId: string, @Req() req: any) {
     const user = req.user;
-    return this.productService.productCreate(user);
+    return this.productService.deleteProduct(productId, user);
+  }
+
+  @UseGuards(AdminGuard)
+  @Get()
+  async getAllProducts(@Req() req: any) {
+    const user = req.user;
+    return this.productService.getAllProducts(user);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('/get-history/:id')
+  async getProductHistory(@Param('id') productId: string, @Req() req: any) {
+    const user = req.user;
+    return this.productService.getProductHistory(productId, user);
   }
 }

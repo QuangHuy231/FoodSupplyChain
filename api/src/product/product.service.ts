@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateProductDto } from './dto/create-product.dto';
+import { CreateProductDto } from '../famer/dto/create-product.dto';
 import { FabricService } from 'src/fabric/fabric.service';
 
 @Injectable()
@@ -63,13 +63,61 @@ export class ProductService {
       throw new HttpException('Error Create Product', HttpStatus.BAD_REQUEST);
     }
   }
-  async productCreate(user: any) {
+  async productCreated(user: any) {
     const network = await this.connect(user.UserType, user.UserId);
-    const result = await this.fabricService.invoke(
+    const result = await this.fabricService.query(
       network,
       'queryProductsCreatedByFarmerNotTransferred',
       user.UserId,
     );
     return JSON.parse(result);
+  }
+
+  async queryProduct(productId: string, user: any) {
+    const network = await this.connect(user.UserType, user.UserId);
+    try {
+      const result = await this.fabricService.query(
+        network,
+        'QueryProduct',
+        productId,
+      );
+      return JSON.parse(result);
+    } catch (error) {
+      throw new HttpException('Product Not Found', HttpStatus.NOT_FOUND);
+    }
+  }
+
+  async getAllProducts(user: any) {
+    const network = await this.connect(user.UserType, user.UserId);
+    const result = await this.fabricService.query(network, 'GetAllProducts');
+    return JSON.parse(result);
+  }
+
+  async deleteProduct(productId: string, user: any) {
+    const network = await this.connect(user.UserType, user.UserId);
+    try {
+      const result = await this.fabricService.invoke(
+        network,
+        'deleteProduct',
+        productId,
+      );
+      return JSON.parse(result);
+    } catch (error) {
+      throw new HttpException('Product Not Found', HttpStatus.NOT_FOUND);
+    }
+  }
+
+  async getProductHistory(productId: string, user: any) {
+    const network = await this.connect(user.UserType, user.UserId);
+    try {
+      const result = await this.fabricService.query(
+        network,
+        'GetProductHistory',
+        productId,
+      );
+      return JSON.parse(result);
+    } catch (error) {
+      throw new HttpException('Product Not Found', HttpStatus.NOT_FOUND);
+    }
   }
 }

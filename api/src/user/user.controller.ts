@@ -11,7 +11,6 @@ import {
 import { UserService } from './user.service';
 import { AuthGuard } from '../guard/auth.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { QueryUserTypeDTO } from './dto/query-user-follow-usertype.dto';
 import { AdminGuard } from 'src/guard/admin.guard';
 
 @Controller('user')
@@ -26,7 +25,7 @@ export class UserController {
     return this.userService.getUserInfo(userId, user);
   }
 
-  @UseGuards(AdminGuard)
+  @UseGuards(AuthGuard)
   @Put(':id')
   updateUserInfo(
     @Param('id') userId: string,
@@ -41,9 +40,20 @@ export class UserController {
   }
 
   @UseGuards(AuthGuard)
-  @Get()
-  queryListUserByUserType(@Body() userType: QueryUserTypeDTO, @Req() req: any) {
+  @Get('/query-users-types/:userType')
+  queryListUserByUserType(
+    @Param('userType') userType: string,
+    @Req() req: any,
+  ) {
+    console.log(userType);
     const user = req.user;
     return this.userService.queryListUserByUserType(userType, user);
+  }
+
+  @UseGuards(AdminGuard)
+  @Get()
+  getAllUsers(@Req() req: any) {
+    const user = req.user;
+    return this.userService.getAllUsers(user);
   }
 }

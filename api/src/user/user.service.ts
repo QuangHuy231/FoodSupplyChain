@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { FabricService } from 'src/fabric/fabric.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { QueryUserTypeDTO } from './dto/query-user-follow-usertype.dto';
 
 @Injectable()
 export class UserService {
@@ -102,15 +101,28 @@ export class UserService {
     }
   }
 
-  async queryListUserByUserType(userType: QueryUserTypeDTO, user: any) {
+  async queryListUserByUserType(userType: string, user: any) {
     const network = await this.connect(user.UserType, user.UserId);
     const queryResultString = await this.fabricService.invoke(
       network,
       'queryListUserByUserType',
-      userType.userType,
+      userType,
     );
 
     const result = JSON.parse(queryResultString);
     return result;
+  }
+
+  async getAllUsers(user: any) {
+    const network = await this.connect(user.UserType, user.UserId);
+    const queryResultString = await this.fabricService.invoke(
+      network,
+      'getAllUsers',
+    );
+
+    const result = JSON.parse(queryResultString);
+    const filteredUsers = result.filter((user) => user.UserType !== 'admin');
+
+    return filteredUsers;
   }
 }
