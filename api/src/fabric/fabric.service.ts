@@ -305,7 +305,7 @@ export class FabricService {
         './retailer-wallet',
       );
       connectionMaterial.connection = retailerCcp;
-      connectionMaterial.orgMSPID = 'ConsumerMSP';
+      connectionMaterial.orgMSPID = 'IntermediateMSP';
       connectionMaterial.caURL = 'https://localhost:10054';
     }
 

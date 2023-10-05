@@ -15,7 +15,7 @@ import { UpdateProductByProducerDto } from './dto/update-product-by-producer.dto
 export class ProducerController {
   constructor(private producerService: ProducerService) {}
   @UseGuards(ProducerGuard)
-  @Get('/producer-recived')
+  @Get('/producer-recieved')
   async getProductRecived(@Req() req: any) {
     const user = req.user;
     return this.producerService.getProductRecieved(user);

@@ -530,7 +530,7 @@ export class SupplyChainContract extends Contract {
     productCode: string,
     retailerId: string,
     vehicle: string
-  ): Promise<void> {
+  ): Promise<string> {
     const productExists = await ctx.stub.getState(productCode);
     if (!productExists || productExists.length === 0) {
       throw new Error("Product not found");
@@ -549,7 +549,7 @@ export class SupplyChainContract extends Contract {
     }
 
     // Cập nhật thông tin nhà bán lẻ
-    product.retailer = retailerId;
+    product.retailerId = retailerId;
     product.vehicle = vehicle;
 
     product.status = "Received";
@@ -562,6 +562,9 @@ export class SupplyChainContract extends Contract {
       "TransferProductToRetailer",
       Buffer.from(JSON.stringify(product))
     );
+    return JSON.stringify({
+      message: "TransferProductToRetailer successfully",
+    });
   }
 
   @Transaction()

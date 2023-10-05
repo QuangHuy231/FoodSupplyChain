@@ -6,10 +6,12 @@ import { UserModule } from './user/user.module';
 import { ProductModule } from './product/product.module';
 import { FamerModule } from './famer/famer.module';
 import { ProducerModule } from './producer/producer.module';
+import { TransportationModule } from './transportation/transportation.module';
+import { RetailerModule } from './retailer/retailer.module';
 
 @Module({
   controllers: [AppController],
   providers: [AppService],
-  imports: [AuthModule, UserModule, ProductModule, FamerModule, ProducerModule],
+  imports: [AuthModule, UserModule, ProductModule, FamerModule, ProducerModule, TransportationModule, RetailerModule],
 })
 export class AppModule {}
