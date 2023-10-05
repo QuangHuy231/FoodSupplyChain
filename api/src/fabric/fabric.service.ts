@@ -32,6 +32,13 @@ const retailerCcpPath = path.join(
 const retailerCcpFile = fs.readFileSync(retailerCcpPath, 'utf8');
 const retailerCcp = JSON.parse(retailerCcpFile);
 
+const consumerCcpPath = path.join(
+  process.cwd(),
+  './src/fabric/ccp/connection-consumer.json',
+);
+const consumerCcpFile = fs.readFileSync(consumerCcpPath, 'utf8');
+const consumerCcp = JSON.parse(consumerCcpFile);
+
 @Injectable()
 export class FabricService {
   async connect(
@@ -310,5 +317,103 @@ export class FabricService {
     }
 
     return connectionMaterial;
+  }
+
+  async connectWithConsumer(userId: string) {
+    const gateway = new Gateway();
+    try {
+      const walletPath = path.join(process.cwd(), './consumer-wallet');
+      const connection = consumerCcp;
+      const orgMSPID = 'ConsumerMSP';
+      const caURL = 'https://localhost:11054';
+
+      const wallet = await Wallets.newFileSystemWallet(walletPath);
+      const userExists = await wallet.get(userId);
+      if (!userExists) {
+        console.error(
+          `An identity for the user ${userId} does not exist in the wallet. Register ${userId} first`,
+        );
+        let adminExists = await wallet.get('admin');
+        if (!adminExists) {
+          console.error('Admin user identity dont have in the wallet');
+          const ca = new FabricCAClient(caURL);
+          const enrollment = await ca.enroll({
+            enrollmentID: 'admin',
+            enrollmentSecret: 'adminpw',
+          });
+          const x509Identity = {
+            credentials: {
+              certificate: enrollment.certificate,
+              privateKey: enrollment.key.toBytes(),
+            },
+            mspId: orgMSPID,
+            type: 'X.509',
+          };
+          await wallet.put('admin', x509Identity);
+          console.log(
+            `Successfully enrolled admin user and imported it into the wallet`,
+          );
+        }
+        adminExists = await wallet.get('admin');
+        const ca = new FabricCAClient(caURL);
+
+        const provider = wallet
+          .getProviderRegistry()
+          .getProvider(adminExists.type);
+        const adminUser = await provider.getUserContext(adminExists, 'admin');
+        let secret;
+        try {
+          secret = await ca.register(
+            {
+              affiliation: 'org1.department1',
+              enrollmentID: userId,
+              role: 'client',
+            },
+            adminUser,
+          );
+        } catch (err) {
+          return err.message;
+        }
+
+        const enrollment = await ca.enroll({
+          enrollmentID: userId,
+          enrollmentSecret: secret,
+        });
+        const x509Identity = {
+          credentials: {
+            certificate: enrollment.certificate,
+            privateKey: enrollment.key.toBytes(),
+          },
+          mspId: orgMSPID,
+          type: 'X.509',
+        };
+
+        await wallet.put(userId, x509Identity);
+
+        console.log(
+          `Successfully registered user. Use userName ${userId} to log in`,
+        );
+      }
+
+      await gateway.connect(connection, {
+        wallet,
+        identity: userId,
+        discovery: {
+          enabled: true,
+          asLocalhost: true,
+        },
+      });
+      const network = await gateway.getNetwork('mychannel');
+      const contract = network.getContract('chaincode');
+      console.log('Connected to Fabric network successfully.');
+
+      const networkObj = { gateway, network, contract };
+
+      return networkObj;
+    } catch (err) {
+      console.error(`Failed to connect network: ${err}`);
+      await gateway.disconnect();
+      return { status: 500, error: err.toString() };
+    }
   }
 }

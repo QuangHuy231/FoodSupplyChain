@@ -8,10 +8,11 @@ import { FamerModule } from './famer/famer.module';
 import { ProducerModule } from './producer/producer.module';
 import { TransportationModule } from './transportation/transportation.module';
 import { RetailerModule } from './retailer/retailer.module';
+import { ConsumerModule } from './consumer/consumer.module';
 
 @Module({
   controllers: [AppController],
   providers: [AppService],
-  imports: [AuthModule, UserModule, ProductModule, FamerModule, ProducerModule, TransportationModule, RetailerModule],
+  imports: [AuthModule, UserModule, ProductModule, FamerModule, ProducerModule, TransportationModule, RetailerModule, ConsumerModule],
 })
 export class AppModule {}

@@ -15,10 +15,10 @@ function json_ccp {
         ./ccp-template.json
 }
 
-ORG=Intermediate
-P0PORT=10051
-CAPORT=10054
-PEERPEM=/home/huy/TTTN/FoodSupplyChain/network/Intermediate/Peer/tls/tlscacerts/tls-localhost-10054-ca-intermediate.pem
-CAPEM=/home/huy/TTTN/FoodSupplyChain/network/Intermediate/CA-server/tls-cert.pem
+ORG=Consumer
+P0PORT=11051
+CAPORT=11054
+PEERPEM=/home/huy/TTTN/FoodSupplyChain/network/Consumer/Peer/tls/tlscacerts/tls-localhost-11054-ca-consumer.pem
+CAPEM=/home/huy/TTTN/FoodSupplyChain/network/Consumer/CA-server/tls-cert.pem
 
-echo "$(json_ccp $ORG $P0PORT $CAPORT $PEERPEM $CAPEM)" > connection-retailer.json
+echo "$(json_ccp $ORG $P0PORT $CAPORT $PEERPEM $CAPEM)" > connection-consumer.json
