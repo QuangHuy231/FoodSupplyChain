@@ -9,10 +9,11 @@ import { ProducerModule } from './producer/producer.module';
 import { TransportationModule } from './transportation/transportation.module';
 import { RetailerModule } from './retailer/retailer.module';
 import { ConsumerModule } from './consumer/consumer.module';
+import { IpfsModule } from './ipfs/ipfs.module';
 
 @Module({
   controllers: [AppController],
   providers: [AppService],
-  imports: [AuthModule, UserModule, ProductModule, FamerModule, ProducerModule, TransportationModule, RetailerModule, ConsumerModule],
+  imports: [AuthModule, UserModule, ProductModule, FamerModule, ProducerModule, TransportationModule, RetailerModule, ConsumerModule, IpfsModule],
 })
 export class AppModule {}

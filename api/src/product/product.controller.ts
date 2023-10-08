@@ -1,9 +1,20 @@
-import { Controller, Delete, Get, Param, Req, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Req,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 
 import { ProductService } from './product.service';
 
 import { AuthGuard } from 'src/guard/auth.guard';
 import { AdminGuard } from 'src/guard/admin.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('product')
 export class ProductController {
@@ -35,5 +46,11 @@ export class ProductController {
   async getProductHistory(@Param('id') productId: string, @Req() req: any) {
     const user = req.user;
     return this.productService.getProductHistory(productId, user);
+  }
+
+  @Post('/upload')
+  @UseInterceptors(FileInterceptor('image'))
+  async uploadImage(@UploadedFile() image: Express.Multer.File) {
+    return this.productService.uploadImage(image.buffer);
   }
 }

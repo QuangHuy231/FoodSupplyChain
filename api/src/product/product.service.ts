@@ -1,9 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { FabricService } from 'src/fabric/fabric.service';
+import { IpfsService } from 'src/ipfs/ipfs.service';
 
 @Injectable()
 export class ProductService {
-  constructor(private fabricService: FabricService) {}
+  constructor(
+    private fabricService: FabricService,
+    private ipfsService: IpfsService,
+  ) {}
   private async connect(userType: string, userId: string) {
     let network;
     if (userType === 'Famer' || userType === 'admin') {
@@ -91,5 +95,10 @@ export class ProductService {
     } catch (error) {
       throw new HttpException('Product Not Found', HttpStatus.NOT_FOUND);
     }
+  }
+
+  async uploadImage(image) {
+    //http:localhost:8080/ipfs/cid
+    return await this.ipfsService.upload(image);
   }
 }
