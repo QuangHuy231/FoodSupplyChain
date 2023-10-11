@@ -22,7 +22,7 @@ export class AuthService {
   public async generateToken(payload: { UserId: string; UserType: string }) {
     const accessToken = await this.jwtService.signAsync(payload);
 
-    return accessToken;
+    return { accessToken, userType: payload.UserType };
   }
 
   async register(registerUserDto: RegisterUserDto) {
@@ -123,7 +123,7 @@ export class AuthService {
 
   async login(loginUserDto: LoginUserDto) {
     let network;
-    if (loginUserDto.userType === 'Administrator') {
+    if (loginUserDto.userType === 'admin') {
       await this.fabricService.enrollAdmin(true, false, false, false);
 
       network = await this.fabricService.connect(
