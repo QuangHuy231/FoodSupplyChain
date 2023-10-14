@@ -2,66 +2,66 @@ import { AiFillHome, AiFillPlusCircle } from "react-icons/ai";
 
 export const SidebarAdmin = [
   {
-    title: "List Products",
+    label: "List Products",
     icon: <AiFillHome />,
-    link: "/products",
+    key: "/products",
   },
   {
-    title: "Create User",
+    label: "Create User",
     icon: <AiFillPlusCircle />,
-    link: "/create-user",
+    key: "/create-user",
   },
 
   {
-    title: "List User",
+    label: "List User",
     icon: <AiFillPlusCircle />,
-    link: "/list-user",
+    key: "/list-user",
   },
 ];
 
 export const SidebarFamer = [
   {
-    title: "List Products",
+    label: "List Products",
     icon: <AiFillHome />,
-    link: "/famer",
+    key: "/famer",
   },
   {
-    title: "Create Product",
+    label: "Create Product",
     icon: <AiFillPlusCircle />,
-    link: "/famer/create-product",
+    key: "/famer/create-product",
   },
 ];
 
 export const SidebarProducer = [
   {
-    title: "List Products",
+    label: "List Products",
     icon: <AiFillHome />,
-    link: "/producer",
+    key: "/producer",
   },
   {
-    title: "Produce Product",
+    label: "Produce Product",
     icon: <AiFillPlusCircle />,
-    link: "/producer/update-product",
+    key: "/producer/update-product",
   },
 ];
 
 export const SidebarTransportation = [
   {
-    title: "List Products",
+    label: "List Products",
     icon: <AiFillHome />,
-    link: "/transportation",
+    key: "/transportation",
   },
   {
-    title: "Translate Product",
+    label: "Translate Product",
     icon: <AiFillPlusCircle />,
-    link: "/transportation/translate-product",
+    key: "/transportation/translate-product",
   },
 ];
 
 export const SidebarRetailer = [
   {
-    title: "List Products",
+    label: "List Products",
     icon: <AiFillHome />,
-    link: "/Retailer",
+    key: "/Retailer",
   },
 ];

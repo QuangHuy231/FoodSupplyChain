@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { Menu } from "antd";
+import { useEffect, useState } from "react";
 import {
   SidebarAdmin,
   SidebarFamer,
@@ -6,11 +7,13 @@ import {
   SidebarRetailer,
   SidebarTransportation,
 } from "./SidebarData";
-import { Link, useNavigate } from "react-router-dom";
-import logo from "../../assets/logo.png";
-import "./Sidebar.scss";
 
-const Sidebar = ({ userType }) => {
+import { Layout } from "antd";
+import logo from "../../assets/logo.png";
+import { useNavigate } from "react-router-dom";
+
+const Sidebar = ({ userType, collapsed }) => {
+  const navigate = useNavigate();
   const [data, setData] = useState([]);
   useEffect(() => {
     switch (userType) {
@@ -28,11 +31,28 @@ const Sidebar = ({ userType }) => {
         break;
       default:
         setData(SidebarAdmin);
-        break;
     }
   }, [userType]);
 
-  return <div>Sidebar</div>;
+  return (
+    <Layout.Sider
+      trigger={null}
+      collapsible
+      theme="light"
+      collapsed={collapsed}
+    >
+      <div className="logo">
+        <img src={logo} alt="logo image" />
+      </div>
+      <Menu
+        theme="light"
+        mode="vertical"
+        items={data}
+        onClick={(item) => {
+          navigate(item.key);
+        }}
+      />
+    </Layout.Sider>
+  );
 };
-
 export default Sidebar;
