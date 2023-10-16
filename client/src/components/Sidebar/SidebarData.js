@@ -2,20 +2,14 @@ import { AiFillHome, AiFillPlusCircle } from "react-icons/ai";
 
 export const SidebarAdmin = [
   {
-    label: "List Products",
-    icon: <AiFillHome />,
-    key: "/products",
-  },
-  {
-    label: "Create User",
-    icon: <AiFillPlusCircle />,
-    key: "/create-user",
-  },
-
-  {
     label: "List User",
     icon: <AiFillPlusCircle />,
-    key: "/list-user",
+    key: "/",
+  },
+  {
+    label: "List Products",
+    icon: <AiFillHome />,
+    key: "/list-products",
   },
 ];
 

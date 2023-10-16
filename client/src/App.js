@@ -10,6 +10,7 @@ import LayoutProducer from "./layout/LayoutProducer";
 import LayoutTransportation from "./layout/LayoutTransportation";
 import LayoutRetailer from "./layout/LayoutRetailer";
 import LayoutAdmin from "./layout/LayoutAdmin";
+import ListUser from "./components/Admin/ListUser";
 
 axios.defaults.baseURL = "http://localhost:3000";
 axios.defaults.withCredentials = true;
@@ -23,7 +24,7 @@ function App() {
         </Route>
         <Route element={<PrivateRoutes />}>
           <Route element={<LayoutAdmin />}>
-            <Route path="/" element={<Products />} />
+            <Route path="/" element={<ListUser />} />
           </Route>
           <Route element={<LayoutFamer />}>
             <Route path="/famer" element={<Products />} />

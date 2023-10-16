@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
-  const [userType, setUserType] = useState("");
+  const [userType, setUserType] = useState("admin");
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const handleLogin = async () => {
@@ -99,6 +99,7 @@ const Login = () => {
                 <select
                   name="userType"
                   id="userType"
+                  defaultValue="admin"
                   onChange={(e) => setUserType(e.target.value)}
                 >
                   <option value="admin">Admindator</option>

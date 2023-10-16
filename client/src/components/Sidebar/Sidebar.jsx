@@ -51,6 +51,7 @@ const Sidebar = ({ userType, collapsed }) => {
         onClick={(item) => {
           navigate(item.key);
         }}
+        style={{ display: "flex", flexDirection: "column", gap: "30px" }}
       />
     </Layout.Sider>
   );

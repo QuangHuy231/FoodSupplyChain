@@ -54,7 +54,7 @@ const Header = ({ collapsed, setCollapsed }) => {
                   onClick={() => {
                     localStorage.removeItem("access_token");
                     localStorage.removeItem("userType");
-                    navigate("/");
+                    navigate("/login");
                   }}
                 >
                   Logout
