@@ -1,15 +1,14 @@
 import React, { useState } from "react";
 import Sidebar from "../components/Sidebar/Sidebar";
-import { Outlet, Navigate } from "react-router-dom";
-import Header from "../components/Header/Header";
-import "./Layout.scss";
+import { Outlet } from "react-router-dom";
 import { Layout } from "antd";
+import Header from "../components/Header/Header";
 
-const LayoutFamer = () => {
+const LayoutSystem = () => {
   const [collapsed, setCollapsed] = useState(false);
   let userType = JSON.parse(localStorage.getItem("userType")) || false;
 
-  return userType === "Famer" ? (
+  return (
     <Layout
       style={{
         height: "100vh",
@@ -29,9 +28,7 @@ const LayoutFamer = () => {
         </Layout.Content>
       </Layout>
     </Layout>
-  ) : (
-    <Navigate to="/login" />
   );
 };
 
-export default LayoutFamer;
+export default LayoutSystem;

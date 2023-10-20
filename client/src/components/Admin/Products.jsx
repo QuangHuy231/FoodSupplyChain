@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Col, Row } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { DeleteOutlined } from "@ant-design/icons";
 import { Card } from "antd";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";

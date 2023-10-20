@@ -3,15 +3,13 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./components/Login/Login";
 import PublicRoutes from "./layout/PublicRoutes";
 import PrivateRoutes from "./layout/PrivateRoutes";
-import LayoutFamer from "./layout/LayoutFamer";
+import LayoutSystem from "./layout/LayoutSystem";
 import axios from "axios";
-import LayoutProducer from "./layout/LayoutProducer";
-import LayoutTransportation from "./layout/LayoutTransportation";
-import LayoutRetailer from "./layout/LayoutRetailer";
-import LayoutAdmin from "./layout/LayoutAdmin";
 import ListUser from "./components/Admin/ListUser";
 import Products from "./components/Admin/Products";
 import DetailProduct from "./components/Admin/DetailProduct";
+import ListProductCreateByFamer from "./components/Famer/ListProductCreateByFamer";
+import CreateProduct from "./components/Famer/CreateProduct";
 
 axios.defaults.baseURL = "http://localhost:3000";
 axios.defaults.withCredentials = true;
@@ -24,15 +22,15 @@ function App() {
           <Route path="/login" element={<Login />} />
         </Route>
         <Route element={<PrivateRoutes />}>
-          <Route element={<LayoutAdmin />}>
+          <Route element={<LayoutSystem />}>
             <Route path="/" element={<ListUser />} />
             <Route path="/list-products" element={<Products />} />
             <Route path="/product/:productCode" element={<DetailProduct />} />
+            <Route path="/famer">
+              <Route path="/famer" element={<ListProductCreateByFamer />} />
+              <Route path="/famer/create-product" element={<CreateProduct />} />
+            </Route>
           </Route>
-          <Route element={<LayoutFamer />}></Route>
-          <Route element={<LayoutProducer />}></Route>
-          <Route element={<LayoutTransportation />}></Route>
-          <Route element={<LayoutRetailer />}></Route>
         </Route>
       </Routes>
     </BrowserRouter>

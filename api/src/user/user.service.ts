@@ -103,7 +103,7 @@ export class UserService {
 
   async queryListUserByUserType(userType: string, user: any) {
     const network = await this.connect(user.UserType, user.UserId);
-    const queryResultString = await this.fabricService.invoke(
+    const queryResultString = await this.fabricService.query(
       network,
       'queryListUserByUserType',
       userType,

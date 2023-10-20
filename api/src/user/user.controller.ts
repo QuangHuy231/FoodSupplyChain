@@ -45,7 +45,6 @@ export class UserController {
     @Param('userType') userType: string,
     @Req() req: any,
   ) {
-    console.log(userType);
     const user = req.user;
     return this.userService.queryListUserByUserType(userType, user);
   }
