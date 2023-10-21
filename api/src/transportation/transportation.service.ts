@@ -48,4 +48,14 @@ export class TransportationService {
       );
     }
   }
+
+  async getProductOfTransportation(user: any) {
+    const network = await this.connect(user.UserId);
+    const result = await this.fabricService.query(
+      network,
+      'GetProductOfTransportation',
+      user.UserId,
+    );
+    return JSON.parse(result);
+  }
 }

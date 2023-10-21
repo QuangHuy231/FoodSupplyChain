@@ -38,4 +38,11 @@ export class TransportationController {
       transferProductToRetailer,
     );
   }
+
+  @Get('/product-of-transportation')
+  @UseGuards(TransportationGuard)
+  async getProductOfFamer(@Req() req: any) {
+    const user = req.user;
+    return this.transportationSevice.getProductOfTransportation(user);
+  }
 }

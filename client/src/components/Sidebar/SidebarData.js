@@ -34,6 +34,11 @@ export const SidebarFamer = [
     icon: <AiFillPlusCircle />,
     key: "/famer/create-product",
   },
+  {
+    label: "Product Of Famer",
+    icon: <AiFillPlusCircle />,
+    key: "/famer/product-of-famer",
+  },
 ];
 
 export const SidebarProducer = [
@@ -52,6 +57,11 @@ export const SidebarProducer = [
     icon: <AiFillPlusCircle />,
     key: "/producer/product-in-producer",
   },
+  {
+    label: "Product Of Producer",
+    icon: <AiFillPlusCircle />,
+    key: "/producer/product-of-producer",
+  },
 ];
 
 export const SidebarTransportation = [
@@ -66,9 +76,9 @@ export const SidebarTransportation = [
     key: "/transportation",
   },
   {
-    label: "Translate Product",
+    label: "Product Of Transportation",
     icon: <AiFillPlusCircle />,
-    key: "/transportation/translate-product",
+    key: "/transportation/product-of-transportation",
   },
 ];
 

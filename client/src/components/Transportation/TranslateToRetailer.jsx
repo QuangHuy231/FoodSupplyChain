@@ -1,0 +1,80 @@
+import { Modal, Select } from "antd";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { VehicleType } from "../../utils/VehicleType";
+
+const TranslateToRetailer = ({ productCode, open, setOpen }) => {
+  const access_token = JSON.parse(localStorage.getItem("access_token"));
+  const [listRetailer, setListRetailer] = useState([]);
+  const [retailer, setRetailer] = useState("");
+  const [vehicle, setVehicle] = useState("");
+  useEffect(() => {
+    axios
+      .get("/user/query-users-types/Retailer", {
+        headers: { authorization: `Bearer ${access_token}` },
+      })
+      .then((response) => {
+        setListRetailer(response.data);
+      });
+  }, [access_token]);
+
+  const handleTranlateToRetailer = () => {
+    axios
+      .put(
+        `/transportation/transfer-product-to-retailer/${productCode}`,
+        {
+          retailerId: retailer,
+          vehicle: vehicle,
+        },
+        {
+          headers: { authorization: `Bearer ${access_token}` },
+        }
+      )
+      .then((response) => {
+        setOpen(false);
+        window.location.reload();
+      });
+  };
+
+  return (
+    <Modal
+      title="Translate To Retailer"
+      open={open}
+      onCancel={() => setOpen(false)}
+      onOk={handleTranlateToRetailer}
+    >
+      <div
+        style={{
+          display: "flex",
+          alignItems: "flex-end",
+          flexDirection: "column",
+          gap: "20px",
+          marginRight: "50px",
+        }}
+      >
+        <div>
+          <label>Producer Name: </label>
+          <Select style={{ width: "200px" }} onChange={(e) => setRetailer(e)}>
+            {listRetailer.map((user) => (
+              <Select.Option key={user.UserId} value={user.UserId}>
+                {user.UserName}
+              </Select.Option>
+            ))}
+          </Select>
+        </div>
+        <div>
+          <label>Vehicle: </label>
+          <Select style={{ width: "200px" }} onChange={(e) => setVehicle(e)}>
+            {VehicleType.map((vehicle) => (
+              <Select.Option key={vehicle.id} value={vehicle.value}>
+                {vehicle.value}
+              </Select.Option>
+            ))}
+          </Select>
+        </div>
+      </div>
+    </Modal>
+  );
+};
+
+export default TranslateToRetailer;

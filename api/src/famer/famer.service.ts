@@ -65,4 +65,14 @@ export class FamerService {
       );
     }
   }
+
+  async getProductOfFamer(user: any) {
+    const network = await this.connect(user.UserId);
+    const result = await this.fabricService.query(
+      network,
+      'GetProductOfFamer',
+      user.UserId,
+    );
+    return JSON.parse(result);
+  }
 }

@@ -7,13 +7,17 @@ import LayoutSystem from "./layout/LayoutSystem";
 import axios from "axios";
 import ListUser from "./components/Admin/ListUser";
 import Products from "./components/Admin/Products";
-import DetailProduct from "./components/Admin/DetailProduct";
 import ListProductCreateByFamer from "./components/Famer/ListProductCreateByFamer";
 import CreateProduct from "./components/Famer/CreateProduct";
 import ListProductRecieved from "./components/Producer/ListProductReceived";
 import ListProductInStock from "./components/Producer/ListProductInStock";
 import ProduceProduct from "./components/Producer/ProduceProduct/ProduceProduct";
 import Home from "./components/Home";
+import DetailProduct from "./components/DetailProduct/DetailProduct";
+import ListProductOfFamer from "./components/Famer/ListProductOfFamer";
+import ListProductOfProducer from "./components/Producer/ListProductOfProducer";
+import ListProductRecievedByTransportation from "./components/Transportation/ListProductReceivedByTransportation";
+import ListProductOfTransportation from "./components/Transportation/ListProductOfTransportation";
 
 axios.defaults.baseURL = "http://localhost:3000";
 axios.defaults.withCredentials = true;
@@ -34,6 +38,10 @@ function App() {
             <Route path="/famer">
               <Route path="/famer" element={<ListProductCreateByFamer />} />
               <Route path="/famer/create-product" element={<CreateProduct />} />
+              <Route
+                path="/famer/product-of-famer"
+                element={<ListProductOfFamer />}
+              />
             </Route>
             <Route path="/producer">
               <Route path="/producer" element={<ListProductRecieved />} />
@@ -44,6 +52,20 @@ function App() {
               <Route
                 path="/producer/produce-product/:productCode"
                 element={<ProduceProduct />}
+              />
+              <Route
+                path="/producer/product-of-producer"
+                element={<ListProductOfProducer />}
+              />
+            </Route>
+            <Route path="/transportation">
+              <Route
+                path="/transportation"
+                element={<ListProductRecievedByTransportation />}
+              />
+              <Route
+                path="/transportation/product-of-transportation"
+                element={<ListProductOfTransportation />}
               />
             </Route>
           </Route>

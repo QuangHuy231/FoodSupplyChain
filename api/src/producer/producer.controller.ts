@@ -58,4 +58,11 @@ export class ProducerController {
       user,
     );
   }
+
+  @Get('/product-of-producer')
+  @UseGuards(ProducerGuard)
+  async getProductOfFamer(@Req() req: any) {
+    const user = req.user;
+    return this.producerService.getProductOfProducer(user);
+  }
 }

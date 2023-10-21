@@ -700,4 +700,103 @@ export class SupplyChainContract extends Contract {
 
     return JSON.stringify(allHistory);
   }
+
+  @Transaction()
+  public async GetProductOfFamer(
+    ctx: Context,
+    famerId: string
+  ): Promise<string> {
+    const products = [];
+
+    const query = {
+      selector: {
+        docType: "Product",
+        famerId: famerId,
+      },
+    };
+
+    const iterator = await ctx.stub.getQueryResult(JSON.stringify(query));
+    let result = await iterator.next();
+    while (!result.done) {
+      const strValue = Buffer.from(result.value.value.toString()).toString(
+        "utf8"
+      );
+      let record;
+      try {
+        record = JSON.parse(strValue);
+      } catch (err) {
+        console.log(err);
+        record = strValue;
+      }
+      products.push(record);
+      result = await iterator.next();
+    }
+    return JSON.stringify(products);
+  }
+
+  @Transaction()
+  public async GetProductOfProducer(
+    ctx: Context,
+    producerId: string
+  ): Promise<string> {
+    const products = [];
+
+    const query = {
+      selector: {
+        docType: "Product",
+        producerId: producerId,
+      },
+    };
+
+    const iterator = await ctx.stub.getQueryResult(JSON.stringify(query));
+    let result = await iterator.next();
+    while (!result.done) {
+      const strValue = Buffer.from(result.value.value.toString()).toString(
+        "utf8"
+      );
+      let record;
+      try {
+        record = JSON.parse(strValue);
+      } catch (err) {
+        console.log(err);
+        record = strValue;
+      }
+      products.push(record);
+      result = await iterator.next();
+    }
+    return JSON.stringify(products);
+  }
+
+  @Transaction()
+  public async GetProductOfTransportation(
+    ctx: Context,
+    transportationId: string
+  ): Promise<string> {
+    const products = [];
+
+    const query = {
+      selector: {
+        docType: "Product",
+        transportationId: transportationId,
+      },
+    };
+
+    const iterator = await ctx.stub.getQueryResult(JSON.stringify(query));
+    let result = await iterator.next();
+    while (!result.done) {
+      const strValue = Buffer.from(result.value.value.toString()).toString(
+        "utf8"
+      );
+      let record;
+      try {
+        record = JSON.parse(strValue);
+      } catch (err) {
+        console.log(err);
+        record = strValue;
+      }
+      products.push(record);
+      result = await iterator.next();
+    }
+    return JSON.stringify(products);
+  }
 }

@@ -83,4 +83,13 @@ export class ProducerService {
       );
     }
   }
+  async getProductOfProducer(user: any) {
+    const network = await this.connect(user.UserId);
+    const result = await this.fabricService.query(
+      network,
+      'GetProductOfProducer',
+      user.UserId,
+    );
+    return JSON.parse(result);
+  }
 }

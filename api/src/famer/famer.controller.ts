@@ -49,4 +49,11 @@ export class FamerController {
       user,
     );
   }
+
+  @Get('/product-of-famer')
+  @UseGuards(FamerGuard)
+  async getProductOfFamer(@Req() req: any) {
+    const user = req.user;
+    return this.famerService.getProductOfFamer(user);
+  }
 }
