@@ -41,7 +41,11 @@ const Sidebar = ({ userType, collapsed }) => {
       theme="light"
       collapsed={collapsed}
     >
-      <div className="logo">
+      <div
+        className="logo"
+        style={{ cursor: "pointer" }}
+        onClick={() => navigate("/")}
+      >
         <img src={logo} alt="logo image" />
       </div>
       <Menu

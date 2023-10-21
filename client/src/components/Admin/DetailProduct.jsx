@@ -4,6 +4,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "./DetailProduct.scss";
+import HistoryProduct from "../HistoryProduct/HistoryProduct";
 
 const DetailProduct = () => {
   const { productCode } = useParams();
@@ -36,8 +37,8 @@ const DetailProduct = () => {
       <div className="product-image">
         <img
           src={`http://localhost:8080/ipfs/${
-            detailProduct.imageProduct
-              ? detailProduct.imageProduct
+            detailProduct.imagesProduct
+              ? detailProduct.imagesProduct
               : detailProduct.imageProductInFamers
           }`}
           alt="image product"
@@ -142,6 +143,7 @@ const DetailProduct = () => {
           </p>
         </Card>
       </div>
+      <HistoryProduct productCode={productCode} />
 
       <Drawer
         size="large"

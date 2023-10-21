@@ -4,9 +4,9 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { BiTransfer } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
-import TranslateToProducer from "./TranslateToProducer";
+import TranslateToTransportation from "./TranslateToTransportation";
 
-const ListProductCreateByFamer = () => {
+const ListProductInStock = () => {
   const access_token = JSON.parse(localStorage.getItem("access_token"));
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
@@ -14,14 +14,13 @@ const ListProductCreateByFamer = () => {
   const [open, setOpen] = useState(false);
   useEffect(() => {
     axios
-      .get("/famer/product-created", {
+      .get("/producer/product-in-producer", {
         headers: { authorization: `Bearer ${access_token}` },
       })
       .then((res) => {
         setProducts(res.data);
       });
   }, [access_token]);
-
   const handleTranslate = (productCode) => {
     setOpen(true);
     setProductCode(productCode);
@@ -29,14 +28,9 @@ const ListProductCreateByFamer = () => {
   return (
     <>
       {products.length === 0 ? (
-        <Empty
-          style={{
-            fontSize: "24px",
-          }}
-        />
+        <Empty />
       ) : (
         <>
-          {" "}
           <Row gutter={[16, 24]}>
             {products.map((product) => (
               <Col key={product.productCode} className="gutter-row" span={6}>
@@ -54,7 +48,7 @@ const ListProductCreateByFamer = () => {
                       onClick={() =>
                         navigate(`/product/${product.productCode}`)
                       }
-                      src={`http://localhost:8080/ipfs/${product.imageProductInFamers}`}
+                      src={`http://localhost:8080/ipfs/${product.imagesProduct}`}
                     />
                   }
                   actions={[
@@ -91,7 +85,7 @@ const ListProductCreateByFamer = () => {
               </Col>
             ))}
           </Row>
-          <TranslateToProducer
+          <TranslateToTransportation
             productCode={productCode}
             open={open}
             setOpen={setOpen}
@@ -102,4 +96,4 @@ const ListProductCreateByFamer = () => {
   );
 };
 
-export default ListProductCreateByFamer;
+export default ListProductInStock;

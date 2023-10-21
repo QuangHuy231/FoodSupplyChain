@@ -2,9 +2,14 @@ import { AiFillHome, AiFillPlusCircle } from "react-icons/ai";
 
 export const SidebarAdmin = [
   {
+    label: "Home",
+    icon: <AiFillHome />,
+    key: "/",
+  },
+  {
     label: "List User",
     icon: <AiFillPlusCircle />,
-    key: "/",
+    key: "/list-user",
   },
   {
     label: "List Products",
@@ -14,6 +19,11 @@ export const SidebarAdmin = [
 ];
 
 export const SidebarFamer = [
+  {
+    label: "Home",
+    icon: <AiFillHome />,
+    key: "/",
+  },
   {
     label: "List Products",
     icon: <AiFillHome />,
@@ -28,18 +38,28 @@ export const SidebarFamer = [
 
 export const SidebarProducer = [
   {
-    label: "List Products",
+    label: "Home",
+    icon: <AiFillHome />,
+    key: "/",
+  },
+  {
+    label: "Products Recieved",
     icon: <AiFillHome />,
     key: "/producer",
   },
   {
-    label: "Produce Product",
+    label: "Product In Stock",
     icon: <AiFillPlusCircle />,
-    key: "/producer/update-product",
+    key: "/producer/product-in-producer",
   },
 ];
 
 export const SidebarTransportation = [
+  {
+    label: "Home",
+    icon: <AiFillHome />,
+    key: "/",
+  },
   {
     label: "List Products",
     icon: <AiFillHome />,
@@ -53,6 +73,11 @@ export const SidebarTransportation = [
 ];
 
 export const SidebarRetailer = [
+  {
+    label: "Home",
+    icon: <AiFillHome />,
+    key: "/",
+  },
   {
     label: "List Products",
     icon: <AiFillHome />,

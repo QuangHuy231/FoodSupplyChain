@@ -2,19 +2,16 @@ import { Card, Col, Empty, Row } from "antd";
 import Meta from "antd/es/card/Meta";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { BiTransfer } from "react-icons/bi";
+import { AiFillSetting } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
-import TranslateToProducer from "./TranslateToProducer";
 
-const ListProductCreateByFamer = () => {
+const ListProductRecieved = () => {
   const access_token = JSON.parse(localStorage.getItem("access_token"));
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
-  const [productCode, setProductCode] = useState("");
-  const [open, setOpen] = useState(false);
   useEffect(() => {
     axios
-      .get("/famer/product-created", {
+      .get("/producer/producer-recieved", {
         headers: { authorization: `Bearer ${access_token}` },
       })
       .then((res) => {
@@ -22,21 +19,12 @@ const ListProductCreateByFamer = () => {
       });
   }, [access_token]);
 
-  const handleTranslate = (productCode) => {
-    setOpen(true);
-    setProductCode(productCode);
-  };
   return (
     <>
       {products.length === 0 ? (
-        <Empty
-          style={{
-            fontSize: "24px",
-          }}
-        />
+        <Empty />
       ) : (
         <>
-          {" "}
           <Row gutter={[16, 24]}>
             {products.map((product) => (
               <Col key={product.productCode} className="gutter-row" span={6}>
@@ -64,10 +52,14 @@ const ListProductCreateByFamer = () => {
                         alignItems: "center",
                         justifyContent: "center",
                       }}
-                      onClick={() => handleTranslate(product.productCode)}
+                      onClick={() =>
+                        navigate(
+                          `/producer/produce-product/${product.productCode}`
+                        )
+                      }
                     >
-                      <BiTransfer />
-                      Translate to Producer
+                      <AiFillSetting />
+                      Produce Product
                     </div>,
                   ]}
                 >
@@ -91,15 +83,10 @@ const ListProductCreateByFamer = () => {
               </Col>
             ))}
           </Row>
-          <TranslateToProducer
-            productCode={productCode}
-            open={open}
-            setOpen={setOpen}
-          />
         </>
       )}
     </>
   );
 };
 
-export default ListProductCreateByFamer;
+export default ListProductRecieved;

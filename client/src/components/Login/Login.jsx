@@ -28,23 +28,7 @@ const Login = () => {
 
       localStorage.setItem("access_token", JSON.stringify(data.access_token));
       localStorage.setItem("userType", JSON.stringify(data.userType));
-      const user = data.userType;
-      switch (user) {
-        case "Famer":
-          navigate("/famer");
-          break;
-        case "Producer":
-          navigate("/producer");
-          break;
-        case "Transportation":
-          navigate("/transportation");
-          break;
-        case "Retailer":
-          navigate("/retailer");
-          break;
-        default:
-          navigate("/");
-      }
+      navigate("/");
     } catch (error) {
       setError("Login failed");
     }

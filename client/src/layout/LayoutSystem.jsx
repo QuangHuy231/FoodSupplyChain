@@ -11,7 +11,7 @@ const LayoutSystem = () => {
   return (
     <Layout
       style={{
-        height: "100vh",
+        minHeight: "100vh",
       }}
     >
       <Sidebar userType={userType} collapsed={collapsed} />

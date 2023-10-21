@@ -2,24 +2,24 @@ import { Modal, Select } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
-const TranslateToProducer = ({ productCode, open, setOpen }) => {
+const TranslateToTransportation = ({ productCode, open, setOpen }) => {
   const access_token = JSON.parse(localStorage.getItem("access_token"));
-  const [listProducer, setListProducer] = useState([]);
-  const [producer, setProducer] = useState("");
+  const [listTransportation, setListTransportation] = useState([]);
+  const [transportation, setTransportation] = useState("");
   useEffect(() => {
     axios
-      .get("/user/query-users-types/Producer", {
+      .get("/user/query-users-types/Transportation", {
         headers: { authorization: `Bearer ${access_token}` },
       })
       .then((response) => {
-        setListProducer(response.data);
+        setListTransportation(response.data);
       });
   }, [access_token]);
 
-  const handleTranlateToProducer = () => {
+  const handleTranlateToTransportation = () => {
     axios
       .put(
-        `/famer/transfer-producer/${productCode}/${producer}`,
+        `/producer/transfer-product-to-transportation/${productCode}/${transportation}`,
         {},
         {
           headers: { authorization: `Bearer ${access_token}` },
@@ -36,12 +36,15 @@ const TranslateToProducer = ({ productCode, open, setOpen }) => {
       title="Translate"
       open={open}
       onCancel={() => setOpen(false)}
-      onOk={handleTranlateToProducer}
+      onOk={handleTranlateToTransportation}
     >
       <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-        <label>Producer Name: </label>
-        <Select style={{ width: "200px" }} onChange={(e) => setProducer(e)}>
-          {listProducer.map((user) => (
+        <label>Transportation Name: </label>
+        <Select
+          style={{ width: "200px" }}
+          onChange={(e) => setTransportation(e)}
+        >
+          {listTransportation.map((user) => (
             <Select.Option key={user.UserId} value={user.UserId}>
               {user.UserName}
             </Select.Option>
@@ -52,4 +55,4 @@ const TranslateToProducer = ({ productCode, open, setOpen }) => {
   );
 };
 
-export default TranslateToProducer;
+export default TranslateToTransportation;
