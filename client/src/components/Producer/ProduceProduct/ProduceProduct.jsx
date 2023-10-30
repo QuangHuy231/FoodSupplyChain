@@ -5,6 +5,8 @@ import axios from "axios";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import { MdDelete } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ProduceProduct = () => {
   const access_token = JSON.parse(localStorage.getItem("access_token"));
@@ -19,34 +21,42 @@ const ProduceProduct = () => {
     const data = new FormData();
     // Append only the first file to the FormData object
     data.append("image", files[0]);
-    axios
-      .post("/product/upload", data, {
-        headers: { "Content-Type": "multipart/form-data" },
-      })
-      .then((res) => {
-        const filename = res.data.cid;
-        setImageAsset(filename);
-      });
+    try {
+      axios
+        .post("/product/upload", data, {
+          headers: { "Content-Type": "multipart/form-data" },
+        })
+        .then((res) => {
+          const filename = res.data.cid;
+          setImageAsset(filename);
+        });
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   const handleCreate = () => {
-    axios
-      .put(
-        `/producer/update-product-by-producer/${productCode}`,
-        {
-          productionDate,
-          expirationDate,
-          productionSteps,
-          images: imageAsset,
-        },
-        {
-          headers: { authorization: `Bearer ${access_token}` },
-        }
-      )
-      .then((res) => {
-        alert(res.data.message);
-        navigate("/producer/product-in-producer");
-      });
+    try {
+      axios
+        .put(
+          `/producer/update-product-by-producer/${productCode}`,
+          {
+            productionDate,
+            expirationDate,
+            productionSteps,
+            images: imageAsset,
+          },
+          {
+            headers: { authorization: `Bearer ${access_token}` },
+          }
+        )
+        .then((res) => {
+          toast.success(res.data.message);
+          navigate("/producer/product-in-producer");
+        });
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
   return (
     <div className="create-layout">

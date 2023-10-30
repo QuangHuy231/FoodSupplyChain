@@ -8,7 +8,7 @@ const HistoryProduct = ({ productCode }) => {
   const [productsHistory, setProductsHistory] = useState([]);
   useEffect(() => {
     axios
-      .get(`/product/get-history/${productCode}`, {
+      .get(`/consumer/get-history-products/${productCode}`, {
         headers: { authorization: `Bearer ${access_token}` },
       })
       .then((response) => {

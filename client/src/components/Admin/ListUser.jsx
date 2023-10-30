@@ -12,6 +12,8 @@ import {
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { UserTypes } from "../../utils/UserType";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ListUser = () => {
   const [loading, setLoading] = useState(false);
@@ -33,82 +35,107 @@ const ListUser = () => {
   const navigate = useNavigate();
   useEffect(() => {
     setLoading(true);
-    axios
-      .get("/user", {
-        headers: { authorization: `Bearer ${access_token}` },
-      })
-      .then((res) => {
-        if (res.data.lenght === 0) {
-          setHasData(false);
-        }
-        setDataSource(res.data);
-        setLoading(false);
-      });
+    try {
+      axios
+        .get("/user", {
+          headers: { authorization: `Bearer ${access_token}` },
+        })
+        .then((res) => {
+          if (res.data.lenght === 0) {
+            setHasData(false);
+          }
+          setDataSource(res.data);
+          setLoading(false);
+        });
+    } catch (error) {
+      toast.error(error.message);
+    }
   }, [access_token]);
 
   const handleDeleteUser = (UserId) => {
-    axios
-      .delete(`/user/${UserId}`, {
-        headers: { authorization: `Bearer ${access_token}` },
-      })
-      .then((res) => {
-        alert("User deleted successfully");
-        window.location.reload();
-      });
+    try {
+      axios
+        .delete(`/user/${UserId}`, {
+          headers: { authorization: `Bearer ${access_token}` },
+        })
+        .then((res) => {
+          toast.success(res.data.message);
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+        });
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   const handleOpenUpdate = (UserId) => {
-    axios
-      .get(`/user/${UserId}`, {
-        headers: { authorization: `Bearer ${access_token}` },
-      })
-      .then((res) => {
-        setUserInfo(res.data);
-        setUpdateOpen(true);
-      });
+    try {
+      axios
+        .get(`/user/${UserId}`, {
+          headers: { authorization: `Bearer ${access_token}` },
+        })
+        .then((res) => {
+          setUserInfo(res.data);
+          setUpdateOpen(true);
+        });
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   const handleUpdateUser = (UserId) => {
-    axios
-      .put(
-        `/user/${UserId}`,
-        {
-          UpdateUserName,
-          UpdateEmail,
-          UpdateUserType,
-          UpdateAddress,
-        },
-        {
-          headers: { authorization: `Bearer ${access_token}` },
-        }
-      )
-      .then((res) => {
-        alert("Update User successfully");
-        window.location.reload();
-      });
+    try {
+      axios
+        .put(
+          `/user/${UserId}`,
+          {
+            UpdateUserName,
+            UpdateEmail,
+            UpdateUserType,
+            UpdateAddress,
+          },
+          {
+            headers: { authorization: `Bearer ${access_token}` },
+          }
+        )
+        .then((res) => {
+          toast.success(res.data.message);
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+        });
+    } catch (error) {
+      toast.error(error.massage);
+    }
   };
 
   const handleSubmit = () => {
-    axios
-      .post(
-        "/auth/register",
-        {
-          UserName,
-          Email,
-          UserType,
-          Address,
-          Password,
-        },
-        {
-          headers: { authorization: `Bearer ${access_token}` },
-        }
-      )
-      .then((res) => {
-        alert("Create success");
-        window.location.reload();
-      });
+    try {
+      axios
+        .post(
+          "/auth/register",
+          {
+            UserName,
+            Email,
+            UserType,
+            Address,
+            Password,
+          },
+          {
+            headers: { authorization: `Bearer ${access_token}` },
+          }
+        )
+        .then((res) => {
+          toast.success("Create success");
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+        });
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
-  console.log(userInfo);
   return (
     <Space size={20} direction="vertical">
       <div

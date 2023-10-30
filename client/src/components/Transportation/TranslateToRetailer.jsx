@@ -2,6 +2,8 @@ import { Modal, Select } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { VehicleType } from "../../utils/VehicleType";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const TranslateToRetailer = ({ productCode, open, setOpen }) => {
   const access_token = JSON.parse(localStorage.getItem("access_token"));
@@ -19,21 +21,28 @@ const TranslateToRetailer = ({ productCode, open, setOpen }) => {
   }, [access_token]);
 
   const handleTranlateToRetailer = () => {
-    axios
-      .put(
-        `/transportation/transfer-product-to-retailer/${productCode}`,
-        {
-          retailerId: retailer,
-          vehicle: vehicle,
-        },
-        {
-          headers: { authorization: `Bearer ${access_token}` },
-        }
-      )
-      .then((response) => {
-        setOpen(false);
-        window.location.reload();
-      });
+    try {
+      axios
+        .put(
+          `/transportation/transfer-product-to-retailer/${productCode}`,
+          {
+            retailerId: retailer,
+            vehicle: vehicle,
+          },
+          {
+            headers: { authorization: `Bearer ${access_token}` },
+          }
+        )
+        .then((response) => {
+          toast.success(response.data.message);
+          setOpen(false);
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+        });
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   return (

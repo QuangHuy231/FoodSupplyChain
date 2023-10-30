@@ -46,6 +46,7 @@ const ListProductRecievedByTransportation = () => {
                       alt="image product"
                       style={{
                         cursor: "pointer",
+                        height: "250px",
                       }}
                       onClick={() =>
                         navigate(`/product/${product.productCode}`)

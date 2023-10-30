@@ -18,6 +18,7 @@ import ListProductOfFamer from "./components/Famer/ListProductOfFamer";
 import ListProductOfProducer from "./components/Producer/ListProductOfProducer";
 import ListProductRecievedByTransportation from "./components/Transportation/ListProductReceivedByTransportation";
 import ListProductOfTransportation from "./components/Transportation/ListProductOfTransportation";
+import ListProductRecievedByRetailer from "./components/Retailer/ListProductReceivedByRetailer";
 
 axios.defaults.baseURL = "http://localhost:3000";
 axios.defaults.withCredentials = true;
@@ -68,6 +69,10 @@ function App() {
                 element={<ListProductOfTransportation />}
               />
             </Route>
+            <Route
+              path="/retailer"
+              element={<ListProductRecievedByRetailer />}
+            />
           </Route>
         </Route>
       </Routes>

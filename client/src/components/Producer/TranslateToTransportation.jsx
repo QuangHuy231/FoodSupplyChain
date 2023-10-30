@@ -1,6 +1,8 @@
 import { Modal, Select } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const TranslateToTransportation = ({ productCode, open, setOpen }) => {
   const access_token = JSON.parse(localStorage.getItem("access_token"));
@@ -17,18 +19,25 @@ const TranslateToTransportation = ({ productCode, open, setOpen }) => {
   }, [access_token]);
 
   const handleTranlateToTransportation = () => {
-    axios
-      .put(
-        `/producer/transfer-product-to-transportation/${productCode}/${transportation}`,
-        {},
-        {
-          headers: { authorization: `Bearer ${access_token}` },
-        }
-      )
-      .then((response) => {
-        setOpen(false);
-        window.location.reload();
-      });
+    try {
+      axios
+        .put(
+          `/producer/transfer-product-to-transportation/${productCode}/${transportation}`,
+          {},
+          {
+            headers: { authorization: `Bearer ${access_token}` },
+          }
+        )
+        .then((response) => {
+          toast.success(response.data.message);
+          setOpen(false);
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+        });
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   return (

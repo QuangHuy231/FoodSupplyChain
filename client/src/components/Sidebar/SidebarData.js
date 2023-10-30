@@ -1,4 +1,12 @@
-import { AiFillHome, AiFillPlusCircle } from "react-icons/ai";
+import {
+  AiFillHome,
+  AiFillPlusCircle,
+  AiOutlineUsergroupDelete,
+} from "react-icons/ai";
+import { GiHamburgerMenu } from "react-icons/gi";
+import { CgMenuGridO } from "react-icons/cg";
+import { BiSolidFactory } from "react-icons/bi";
+import { FcInTransit } from "react-icons/fc";
 
 export const SidebarAdmin = [
   {
@@ -8,12 +16,12 @@ export const SidebarAdmin = [
   },
   {
     label: "List User",
-    icon: <AiFillPlusCircle />,
+    icon: <AiOutlineUsergroupDelete />,
     key: "/list-user",
   },
   {
     label: "List Products",
-    icon: <AiFillHome />,
+    icon: <CgMenuGridO />,
     key: "/list-products",
   },
 ];
@@ -26,7 +34,7 @@ export const SidebarFamer = [
   },
   {
     label: "List Products",
-    icon: <AiFillHome />,
+    icon: <CgMenuGridO />,
     key: "/famer",
   },
   {
@@ -36,7 +44,7 @@ export const SidebarFamer = [
   },
   {
     label: "Product Of Famer",
-    icon: <AiFillPlusCircle />,
+    icon: <GiHamburgerMenu />,
     key: "/famer/product-of-famer",
   },
 ];
@@ -49,17 +57,17 @@ export const SidebarProducer = [
   },
   {
     label: "Products Recieved",
-    icon: <AiFillHome />,
+    icon: <CgMenuGridO />,
     key: "/producer",
   },
   {
     label: "Product In Stock",
-    icon: <AiFillPlusCircle />,
+    icon: <BiSolidFactory />,
     key: "/producer/product-in-producer",
   },
   {
     label: "Product Of Producer",
-    icon: <AiFillPlusCircle />,
+    icon: <GiHamburgerMenu />,
     key: "/producer/product-of-producer",
   },
 ];
@@ -72,12 +80,12 @@ export const SidebarTransportation = [
   },
   {
     label: "List Products",
-    icon: <AiFillHome />,
+    icon: <GiHamburgerMenu />,
     key: "/transportation",
   },
   {
     label: "Product Of Transportation",
-    icon: <AiFillPlusCircle />,
+    icon: <FcInTransit />,
     key: "/transportation/product-of-transportation",
   },
 ];
@@ -90,7 +98,7 @@ export const SidebarRetailer = [
   },
   {
     label: "List Products",
-    icon: <AiFillHome />,
-    key: "/Retailer",
+    icon: <CgMenuGridO />,
+    key: "/retailer",
   },
 ];

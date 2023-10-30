@@ -5,6 +5,8 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "./DetailProduct.scss";
 import HistoryProduct from "../HistoryProduct/HistoryProduct";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const DetailProduct = () => {
   const { productCode } = useParams();
@@ -14,7 +16,7 @@ const DetailProduct = () => {
   const [detailProduct, setDetailProduct] = useState({});
   useEffect(() => {
     axios
-      .get(`/product/${productCode}`, {
+      .get(`/consumer/get-info-products/${productCode}`, {
         headers: { authorization: `Bearer ${access_token}` },
       })
       .then((res) => {
@@ -22,16 +24,19 @@ const DetailProduct = () => {
       });
   }, [access_token, productCode]);
   const handleGetUserDetail = (UserId) => {
-    axios
-      .get(`user/${UserId}`, {
-        headers: { authorization: `Bearer ${access_token}` },
-      })
-      .then((res) => {
-        setUserInfo(res.data);
-        setOpenDetailUser(true);
-      });
+    try {
+      axios
+        .get(`/consumer/get-user-info/${UserId}`, {
+          headers: { authorization: `Bearer ${access_token}` },
+        })
+        .then((res) => {
+          setUserInfo(res.data);
+          setOpenDetailUser(true);
+        });
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
-  console.log(detailProduct);
   return (
     <div>
       <div className="product-image">

@@ -4,6 +4,8 @@ import { DeleteOutlined } from "@ant-design/icons";
 import { Card } from "antd";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const { Meta } = Card;
 
@@ -22,14 +24,20 @@ const Products = () => {
   }, [access_token]);
 
   const handleDeleteProduct = (productCode) => {
-    axios
-      .delete(`/product/${productCode}`, {
-        headers: { authorization: `Bearer ${access_token}` },
-      })
-      .then((res) => {
-        alert("Delete product successfully");
-        window.location.reload();
-      });
+    try {
+      axios
+        .delete(`/product/${productCode}`, {
+          headers: { authorization: `Bearer ${access_token}` },
+        })
+        .then((res) => {
+          toast.success(res.data.message);
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+        });
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
   return (
     <>
@@ -49,6 +57,7 @@ const Products = () => {
                     alt="image product"
                     style={{
                       cursor: "pointer",
+                      height: "250px",
                     }}
                     onClick={() => navigate(`/product/${product.productCode}`)}
                     src={`http://localhost:8080/ipfs/${

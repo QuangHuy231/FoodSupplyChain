@@ -3,14 +3,17 @@ import Meta from "antd/es/card/Meta";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import GetQr from "./GetQr";
 
-const ListProductOfTransportation = () => {
+const ListProductRecievedByRetailer = () => {
   const access_token = JSON.parse(localStorage.getItem("access_token"));
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
+  const [productCode, setProductCode] = useState("");
+  const [open, setOpen] = useState(false);
   useEffect(() => {
     axios
-      .get("/transportation/product-of-transportation", {
+      .get("/retailer/retailer-recieved", {
         headers: { authorization: `Bearer ${access_token}` },
       })
       .then((res) => {
@@ -18,14 +21,15 @@ const ListProductOfTransportation = () => {
       });
   }, [access_token]);
 
+  const handleGetQr = (productCode) => {
+    setOpen(true);
+    setProductCode(productCode);
+  };
+
   return (
     <>
       {products.length === 0 ? (
-        <Empty
-          style={{
-            fontSize: "24px",
-          }}
-        />
+        <Empty />
       ) : (
         <>
           <Row gutter={[16, 24]}>
@@ -49,6 +53,18 @@ const ListProductOfTransportation = () => {
                       src={`http://localhost:8080/ipfs/${product.imagesProduct}`}
                     />
                   }
+                  actions={[
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                      onClick={() => handleGetQr(product.productCode)}
+                    >
+                      Get QR
+                    </div>,
+                  ]}
                 >
                   <Meta
                     title={product.productName}
@@ -70,10 +86,11 @@ const ListProductOfTransportation = () => {
               </Col>
             ))}
           </Row>
+          <GetQr productCode={productCode} open={open} setOpen={setOpen} />
         </>
       )}
     </>
   );
 };
 
-export default ListProductOfTransportation;
+export default ListProductRecievedByRetailer;

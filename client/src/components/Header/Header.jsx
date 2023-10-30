@@ -43,11 +43,6 @@ const Header = ({ collapsed, setCollapsed }) => {
           items: [
             {
               key: "1",
-              icon: <UserOutlined />,
-              label: <span onClick={() => navigate("/account")}>Account</span>,
-            },
-            {
-              key: "2",
               icon: <LogoutOutlined />,
               label: (
                 <span
