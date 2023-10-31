@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Col, Empty, Row } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
-import { Card } from "antd";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
-const { Meta } = Card;
+import "./Products.scss";
 
 const Products = () => {
   const access_token = JSON.parse(localStorage.getItem("access_token"));
@@ -47,50 +45,35 @@ const Products = () => {
         <Row gutter={[16, 24]}>
           {products.map((product) => (
             <Col key={product.productCode} className="gutter-row" span={6}>
-              <Card
-                style={{
-                  width: 300,
-                }}
-                cover={
-                  // eslint-disable-next-line jsx-a11y/img-redundant-alt
+              <div className="product-card">
+                <div
+                  className="image-product"
+                  onClick={() => navigate(`/product/${product.productCode}`)}
+                >
                   <img
-                    alt="image product"
-                    style={{
-                      cursor: "pointer",
-                      height: "250px",
-                    }}
-                    onClick={() => navigate(`/product/${product.productCode}`)}
                     src={`http://localhost:8080/ipfs/${
                       product.imagesProduct
                         ? product?.imagesProduct
                         : product?.imageProductInFamers
                     }`}
+                    alt="image-product"
                   />
-                }
-                actions={[
-                  <DeleteOutlined
-                    key="delete"
-                    onClick={() => handleDeleteProduct(product.productCode)}
-                  />,
-                ]}
-              >
-                <Meta
-                  title={product.productName}
-                  description={
-                    <div
-                      style={{
-                        padding: "10px",
-                        border: "1px solid black",
-                        textAlign: "center",
-                        borderRadius: "10px",
-                        color: "black",
-                      }}
-                    >
-                      {product.status}
-                    </div>
-                  }
-                />
-              </Card>
+                </div>
+                <div
+                  className="product-content"
+                  onClick={() => navigate(`/product/${product.productCode}`)}
+                >
+                  <p>{product.productName}</p>
+                  <div className="product-status">{product.status}</div>
+                </div>
+
+                <div
+                  className="button-action-delete"
+                  onClick={() => handleDeleteProduct(product.productCode)}
+                >
+                  <DeleteOutlined className="icon-button" />
+                </div>
+              </div>
             </Col>
           ))}
         </Row>

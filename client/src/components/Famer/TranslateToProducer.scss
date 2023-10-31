@@ -1,0 +1,11 @@
+.translate-container-famer {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-size: 18px;
+  padding: 20px;
+  .select {
+    width: 250px;
+    height: 50px;
+  }
+}

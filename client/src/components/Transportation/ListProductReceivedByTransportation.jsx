@@ -1,10 +1,11 @@
-import { Card, Col, Empty, Row } from "antd";
-import Meta from "antd/es/card/Meta";
+import { Col, Empty, Row } from "antd";
+import "./ListProductReceivedByTransportation.scss";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { BiTransfer } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import TranslateToRetailer from "./TranslateToRetailer";
+import { Context } from "../../utils/context";
 
 const ListProductRecievedByTransportation = () => {
   const access_token = JSON.parse(localStorage.getItem("access_token"));
@@ -12,6 +13,7 @@ const ListProductRecievedByTransportation = () => {
   const [productCode, setProductCode] = useState("");
   const [open, setOpen] = useState(false);
   const [products, setProducts] = useState([]);
+  const { setHeading } = useContext(Context);
   useEffect(() => {
     axios
       .get("/transportation/transportation-recieved", {
@@ -36,7 +38,7 @@ const ListProductRecievedByTransportation = () => {
           <Row gutter={[16, 24]}>
             {products.map((product) => (
               <Col key={product.productCode} className="gutter-row" span={6}>
-                <Card
+                {/* <Card
                   style={{
                     width: 300,
                   }}
@@ -48,9 +50,10 @@ const ListProductRecievedByTransportation = () => {
                         cursor: "pointer",
                         height: "250px",
                       }}
-                      onClick={() =>
-                        navigate(`/product/${product.productCode}`)
-                      }
+                      onClick={() => {
+                        setHeading("Product Details");
+                        navigate(`/product/${product.productCode}`);
+                      }}
                       src={`http://localhost:8080/ipfs/${product.imagesProduct}`}
                     />
                   }
@@ -84,7 +87,40 @@ const ListProductRecievedByTransportation = () => {
                       </div>
                     }
                   />
-                </Card>
+                </Card> */}
+
+                <div className="product-card">
+                  <div
+                    className="image-product"
+                    onClick={() => {
+                      setHeading("Product Details");
+                      navigate(`/product/${product.productCode}`);
+                    }}
+                  >
+                    <img
+                      src={`http://localhost:8080/ipfs/${product.imageProductInFamers}`}
+                      alt="image-product"
+                    />
+                  </div>
+                  <div
+                    className="product-content"
+                    onClick={() => {
+                      setHeading("Product Details");
+                      navigate(`/product/${product.productCode}`);
+                    }}
+                  >
+                    <p>{product.productName}</p>
+                    <div className="product-status">{product.status}</div>
+                  </div>
+
+                  <div
+                    className="button-action"
+                    onClick={() => handleTranslate(product.productCode)}
+                  >
+                    <BiTransfer className="icon-button" />
+                    <span>Translate To Retailer</span>
+                  </div>
+                </div>
               </Col>
             ))}
           </Row>

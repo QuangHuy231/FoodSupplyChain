@@ -1,20 +1,29 @@
-import { Menu } from "antd";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import "./Sidebar.scss";
 import {
   SidebarAdmin,
   SidebarFamer,
   SidebarProducer,
   SidebarRetailer,
   SidebarTransportation,
-} from "./SidebarData";
+} from "../../utils/SidebarData";
 
 import { Layout } from "antd";
 import logo from "../../assets/logo.png";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Context } from "../../utils/context";
 
 const Sidebar = ({ userType, collapsed }) => {
+  const { setHeading } = useContext(Context);
   const navigate = useNavigate();
   const [data, setData] = useState([]);
+  const location = useLocation();
+  const [selectedKeys, setSelectedKeys] = useState("/");
+
+  useEffect(() => {
+    const pathName = location.pathname;
+    setSelectedKeys(pathName);
+  }, [location.pathname]);
   useEffect(() => {
     switch (userType) {
       case "Famer":
@@ -39,24 +48,31 @@ const Sidebar = ({ userType, collapsed }) => {
       trigger={null}
       collapsible
       theme="light"
-      collapsed={collapsed}
+      className="sider-container"
     >
       <div
         className="logo"
-        style={{ cursor: "pointer" }}
-        onClick={() => navigate("/")}
+        onClick={() => {
+          setHeading("Home");
+          navigate("/");
+        }}
       >
         <img src={logo} alt="logo image" />
       </div>
-      <Menu
-        theme="light"
-        mode="vertical"
-        items={data}
-        onClick={(item) => {
-          navigate(item.key);
-        }}
-        style={{ display: "flex", flexDirection: "column", gap: "30px" }}
-      />
+      <div className="menu-content">
+        {data.map((item) => (
+          <div
+            className={`item-menu ${selectedKeys === item.key && "selected"}`}
+            onClick={() => {
+              navigate(item.key);
+              setHeading(item.label);
+            }}
+          >
+            <span>{item.icon}</span>
+            <p>{item.label}</p>
+          </div>
+        ))}
+      </div>
     </Layout.Sider>
   );
 };

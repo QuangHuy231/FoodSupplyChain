@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { VehicleType } from "../../utils/VehicleType";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import "./TranslateToRetailer.scss";
 
 const TranslateToRetailer = ({ productCode, open, setOpen }) => {
   const access_token = JSON.parse(localStorage.getItem("access_token"));
@@ -52,18 +53,10 @@ const TranslateToRetailer = ({ productCode, open, setOpen }) => {
       onCancel={() => setOpen(false)}
       onOk={handleTranlateToRetailer}
     >
-      <div
-        style={{
-          display: "flex",
-          alignItems: "flex-end",
-          flexDirection: "column",
-          gap: "20px",
-          marginRight: "50px",
-        }}
-      >
+      <div className="translate-container">
         <div>
           <label>Producer Name: </label>
-          <Select style={{ width: "200px" }} onChange={(e) => setRetailer(e)}>
+          <Select className="select" onChange={(e) => setRetailer(e)}>
             {listRetailer.map((user) => (
               <Select.Option key={user.UserId} value={user.UserId}>
                 {user.UserName}
@@ -73,7 +66,7 @@ const TranslateToRetailer = ({ productCode, open, setOpen }) => {
         </div>
         <div>
           <label>Vehicle: </label>
-          <Select style={{ width: "200px" }} onChange={(e) => setVehicle(e)}>
+          <Select className="select" onChange={(e) => setVehicle(e)}>
             {VehicleType.map((vehicle) => (
               <Select.Option key={vehicle.id} value={vehicle.value}>
                 {vehicle.value}

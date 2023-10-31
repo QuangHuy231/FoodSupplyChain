@@ -19,6 +19,7 @@ import ListProductOfProducer from "./components/Producer/ListProductOfProducer";
 import ListProductRecievedByTransportation from "./components/Transportation/ListProductReceivedByTransportation";
 import ListProductOfTransportation from "./components/Transportation/ListProductOfTransportation";
 import ListProductRecievedByRetailer from "./components/Retailer/ListProductReceivedByRetailer";
+import DetailProductForConsumer from "./components/Consumer/DetailProductForConsumer/DetailProductForConsumer";
 
 axios.defaults.baseURL = "http://localhost:3000";
 axios.defaults.withCredentials = true;
@@ -27,6 +28,10 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route
+          path="/consumer/:productCode"
+          element={<DetailProductForConsumer />}
+        />
         <Route element={<PublicRoutes />}>
           <Route path="/login" element={<Login />} />
         </Route>

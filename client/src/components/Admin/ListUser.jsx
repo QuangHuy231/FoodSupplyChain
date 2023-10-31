@@ -10,7 +10,6 @@ import {
   Typography,
 } from "antd";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { UserTypes } from "../../utils/UserType";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -32,7 +31,7 @@ const ListUser = () => {
   const [updateOpen, setUpdateOpen] = useState(false);
   const access_token = JSON.parse(localStorage.getItem("access_token"));
   const [userInfo, setUserInfo] = useState({});
-  const navigate = useNavigate();
+
   useEffect(() => {
     setLoading(true);
     try {
@@ -147,7 +146,17 @@ const ListUser = () => {
       >
         <Typography.Title>List Users</Typography.Title>
         <Button
-          style={{ float: "right" }}
+          style={{
+            float: "right",
+            padding: "20px",
+            fontSize: "16px",
+            display: "flex",
+            alignItems: "center",
+            color: "black",
+            border: "1px solid black",
+            boxShadow:
+              "rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px",
+          }}
           onClick={() => {
             setCreateOpen(true);
           }}
@@ -159,6 +168,11 @@ const ListUser = () => {
       <Table
         loading={loading}
         bordered
+        style={{
+          borderRadius: "20px",
+          boxShadow:
+            "rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px",
+        }}
         columns={[
           { title: "User Id", dataIndex: "UserId" },
           {

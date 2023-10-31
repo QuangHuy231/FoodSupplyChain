@@ -1,0 +1,51 @@
+.sider-container {
+  border-radius: 20px;
+  margin-right: 20px;
+  height: 90vh;
+  width: 100%;
+  padding: 10px;
+  box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px,
+    rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+  .logo {
+    cursor: pointer;
+    margin-top: 20px;
+    border-radius: 50%;
+    background: #e7ecf0;
+  }
+  .menu-content {
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    align-items: center;
+    .item-menu {
+      width: 100%;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 20px 0;
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 10px;
+
+      span {
+        font-size: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      p {
+        font-size: 18px;
+        font-weight: 500;
+      }
+      &:hover {
+        background: #e7ecf0;
+      }
+    }
+    .selected {
+      color: rgb(0, 102, 255);
+      background-color: #e7ecf0;
+    }
+  }
+}

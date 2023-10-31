@@ -12,10 +12,12 @@ const LayoutSystem = () => {
     <Layout
       style={{
         minHeight: "100vh",
+        margin: "20px",
+        background: "inherit",
       }}
     >
       <Sidebar userType={userType} collapsed={collapsed} />
-      <Layout>
+      <Layout style={{ background: "inherit" }}>
         <Header collapsed={collapsed} setCollapsed={setCollapsed} />
         <Layout.Content
           style={{

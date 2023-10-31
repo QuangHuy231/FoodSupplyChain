@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import "./CreateProduct.scss";
 
 import axios from "axios";
@@ -7,6 +7,7 @@ import { MdDelete } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Context } from "../../utils/context";
 
 const CreateProduct = () => {
   const access_token = JSON.parse(localStorage.getItem("access_token"));
@@ -15,6 +16,7 @@ const CreateProduct = () => {
   const [plantDate, setPlantDate] = useState("");
   const [harvestDate, setHarvestDate] = useState("");
   const navigate = useNavigate();
+  const { setHeading } = useContext(Context);
   const handleUploadImage = (e) => {
     const files = e.target.files;
     const data = new FormData();
@@ -51,6 +53,7 @@ const CreateProduct = () => {
         )
         .then((res) => {
           toast.success(res.data.message);
+          setHeading("List Products");
           navigate("/famer");
         });
     } catch (error) {

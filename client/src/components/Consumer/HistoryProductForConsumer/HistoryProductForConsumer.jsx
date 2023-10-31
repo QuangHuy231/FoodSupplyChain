@@ -1,16 +1,14 @@
 import { Col, Row } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import "./HistoryProduct.scss";
+import "./HistoryProductForConsumer.scss";
 
-const HistoryProduct = ({ productCode }) => {
+const HistoryProductForConsumer = ({ productCode }) => {
   const access_token = JSON.parse(localStorage.getItem("access_token"));
   const [productsHistory, setProductsHistory] = useState([]);
   useEffect(() => {
     axios
-      .get(`/product/get-history/${productCode}`, {
-        headers: { authorization: `Bearer ${access_token}` },
-      })
+      .get(`/consumer/get-history-products/${productCode}`)
       .then((response) => {
         setProductsHistory(response.data);
       });
@@ -80,4 +78,4 @@ const HistoryProduct = ({ productCode }) => {
   );
 };
 
-export default HistoryProduct;
+export default HistoryProductForConsumer;

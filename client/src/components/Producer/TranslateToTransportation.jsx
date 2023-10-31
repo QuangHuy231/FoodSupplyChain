@@ -3,6 +3,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import "./TranslateToTransportation.scss";
 
 const TranslateToTransportation = ({ productCode, open, setOpen }) => {
   const access_token = JSON.parse(localStorage.getItem("access_token"));
@@ -47,12 +48,9 @@ const TranslateToTransportation = ({ productCode, open, setOpen }) => {
       onCancel={() => setOpen(false)}
       onOk={handleTranlateToTransportation}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+      <div className="translate-container-producer">
         <label>Transportation Name: </label>
-        <Select
-          style={{ width: "200px" }}
-          onChange={(e) => setTransportation(e)}
-        >
+        <Select className="select" onChange={(e) => setTransportation(e)}>
           {listTransportation.map((user) => (
             <Select.Option key={user.UserId} value={user.UserId}>
               {user.UserName}

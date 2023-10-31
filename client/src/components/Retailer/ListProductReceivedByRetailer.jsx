@@ -1,9 +1,10 @@
 import { Card, Col, Empty, Row } from "antd";
 import Meta from "antd/es/card/Meta";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import GetQr from "./GetQr";
+import { Context } from "../../utils/context";
 
 const ListProductRecievedByRetailer = () => {
   const access_token = JSON.parse(localStorage.getItem("access_token"));
@@ -11,6 +12,7 @@ const ListProductRecievedByRetailer = () => {
   const [products, setProducts] = useState([]);
   const [productCode, setProductCode] = useState("");
   const [open, setOpen] = useState(false);
+  const { setHeading } = useContext(Context);
   useEffect(() => {
     axios
       .get("/retailer/retailer-recieved", {
@@ -47,9 +49,10 @@ const ListProductRecievedByRetailer = () => {
                         cursor: "pointer",
                         height: "250px",
                       }}
-                      onClick={() =>
-                        navigate(`/product/${product.productCode}`)
-                      }
+                      onClick={() => {
+                        navigate(`/product/${product.productCode}`);
+                        setHeading("Product Details");
+                      }}
                       src={`http://localhost:8080/ipfs/${product.imagesProduct}`}
                     />
                   }

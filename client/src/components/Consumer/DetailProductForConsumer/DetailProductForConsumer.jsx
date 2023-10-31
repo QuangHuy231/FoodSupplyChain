@@ -1,44 +1,37 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
-import { Card, Drawer, Form, Input } from "antd";
+import { Card, Drawer, Form } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import "./DetailProduct.scss";
-import HistoryProduct from "../HistoryProduct/HistoryProduct";
+import "./DetailProductForConsumer.scss";
+import HistoryProduct from "../../HistoryProduct/HistoryProduct";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import HistoryProductForConsumer from "../HistoryProductForConsumer/HistoryProductForConsumer";
 
-const DetailProduct = () => {
+const DetailProductForConsumer = () => {
   const { productCode } = useParams();
   const [openDetailUser, setOpenDetailUser] = useState(false);
   const [userInfo, setUserInfo] = useState({});
   const access_token = JSON.parse(localStorage.getItem("access_token"));
   const [detailProduct, setDetailProduct] = useState({});
   useEffect(() => {
-    axios
-      .get(`/product/${productCode}`, {
-        headers: { authorization: `Bearer ${access_token}` },
-      })
-      .then((res) => {
-        setDetailProduct(res.data);
-      });
+    axios.get(`/consumer/get-info-products/${productCode}`).then((res) => {
+      setDetailProduct(res.data);
+    });
   }, [access_token, productCode]);
   const handleGetUserDetail = (UserId) => {
     try {
-      axios
-        .get(`/user/${UserId}`, {
-          headers: { authorization: `Bearer ${access_token}` },
-        })
-        .then((res) => {
-          setUserInfo(res.data);
-          setOpenDetailUser(true);
-        });
+      axios.get(`/consumer/get-user-info/${UserId}`).then((res) => {
+        setUserInfo(res.data);
+        setOpenDetailUser(true);
+      });
     } catch (error) {
       toast.error(error.message);
     }
   };
   return (
-    <div>
+    <div className="detail-layout">
       <div className="product-image">
         <img
           src={`http://localhost:8080/ipfs/${
@@ -51,13 +44,7 @@ const DetailProduct = () => {
         />
       </div>
       <div className="product-info">
-        <Card
-          title="Product Info"
-          bordered={false}
-          style={{
-            width: 300,
-          }}
-        >
+        <Card title="Product Info" bordered={false} style={{ width: 300 }}>
           <p>
             <label>Product Name: </label>
             {detailProduct.productName}
@@ -154,7 +141,7 @@ const DetailProduct = () => {
           </p>
         </Card>
       </div>
-      <HistoryProduct productCode={productCode} />
+      <HistoryProductForConsumer productCode={productCode} />
 
       <Drawer
         size="large"
@@ -198,4 +185,4 @@ const DetailProduct = () => {
   );
 };
 
-export default DetailProduct;
+export default DetailProductForConsumer;

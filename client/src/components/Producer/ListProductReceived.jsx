@@ -1,14 +1,17 @@
-import { Card, Col, Empty, Row } from "antd";
-import Meta from "antd/es/card/Meta";
+import { Col, Empty, Row } from "antd";
+
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AiFillSetting } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
+import { Context } from "../../utils/context";
+import "./ListProductReceived.scss";
 
 const ListProductRecieved = () => {
   const access_token = JSON.parse(localStorage.getItem("access_token"));
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
+  const { setHeading } = useContext(Context);
   useEffect(() => {
     axios
       .get("/producer/producer-recieved", {
@@ -28,7 +31,7 @@ const ListProductRecieved = () => {
           <Row gutter={[16, 24]}>
             {products.map((product) => (
               <Col key={product.productCode} className="gutter-row" span={6}>
-                <Card
+                {/* <Card
                   style={{
                     width: 300,
                   }}
@@ -53,11 +56,12 @@ const ListProductRecieved = () => {
                         alignItems: "center",
                         justifyContent: "center",
                       }}
-                      onClick={() =>
+                      onClick={() => {
+                        setHeading("Produce Product");
                         navigate(
                           `/producer/produce-product/${product.productCode}`
-                        )
-                      }
+                        );
+                      }}
                     >
                       <AiFillSetting />
                       Produce Product
@@ -80,7 +84,45 @@ const ListProductRecieved = () => {
                       </div>
                     }
                   />
-                </Card>
+                </Card> */}
+
+                <div className="product-card">
+                  <div
+                    className="image-product"
+                    onClick={() => {
+                      setHeading("Product Details");
+                      navigate(`/product/${product.productCode}`);
+                    }}
+                  >
+                    <img
+                      src={`http://localhost:8080/ipfs/${product.imageProductInFamers}`}
+                      alt="image-product"
+                    />
+                  </div>
+                  <div
+                    className="product-content"
+                    onClick={() => {
+                      setHeading("Product Details");
+                      navigate(`/product/${product.productCode}`);
+                    }}
+                  >
+                    <p>{product.productName}</p>
+                    <div className="product-status">{product.status}</div>
+                  </div>
+
+                  <div
+                    className="button-action"
+                    onClick={() => {
+                      setHeading("Produce Product");
+                      navigate(
+                        `/producer/produce-product/${product.productCode}`
+                      );
+                    }}
+                  >
+                    <AiFillSetting className="icon-button" />
+                    <span>Produce Product</span>
+                  </div>
+                </div>
               </Col>
             ))}
           </Row>

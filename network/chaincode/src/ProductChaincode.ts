@@ -475,7 +475,7 @@ export class SupplyChainContract extends Contract {
     }
 
     product.transportationId = transportationId;
-    product.status = "Transfer to Transporter";
+    product.status = "Transporter";
     // Lưu sản phẩm vào ledger
     await ctx.stub.putState(productCode, Buffer.from(JSON.stringify(product)));
 
@@ -500,7 +500,7 @@ export class SupplyChainContract extends Contract {
       selector: {
         docType: "Product",
         transportationId: transportationId,
-        status: "Transfer to Transporter",
+        status: "Transporter",
       },
     };
 

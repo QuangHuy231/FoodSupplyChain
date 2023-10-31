@@ -3,11 +3,13 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import "./TranslateToProducer.scss";
 
 const TranslateToProducer = ({ productCode, open, setOpen }) => {
   const access_token = JSON.parse(localStorage.getItem("access_token"));
   const [listProducer, setListProducer] = useState([]);
   const [producer, setProducer] = useState("");
+
   useEffect(() => {
     axios
       .get("/user/query-users-types/Producer", {
@@ -47,9 +49,9 @@ const TranslateToProducer = ({ productCode, open, setOpen }) => {
       onCancel={() => setOpen(false)}
       onOk={handleTranlateToProducer}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+      <div className="translate-container-famer">
         <label>Producer Name: </label>
-        <Select style={{ width: "200px" }} onChange={(e) => setProducer(e)}>
+        <Select className="select" onChange={(e) => setProducer(e)}>
           {listProducer.map((user) => (
             <Select.Option key={user.UserId} value={user.UserId}>
               {user.UserName}

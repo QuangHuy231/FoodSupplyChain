@@ -2,7 +2,7 @@ import { Modal, QRCode } from "antd";
 import React from "react";
 
 const GetQr = ({ productCode, open, setOpen }) => {
-  const value = `http://localhost:3001/product/${productCode}`;
+  const value = `http://localhost:3001/consumer/${productCode}`;
   return (
     <Modal
       title="QR Code"

@@ -1,42 +1,22 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Dropdown, Layout, Typography } from "antd";
-
+import "./Header.scss";
 import { Button } from "antd";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  UserOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
 import { BiSolidUserCircle } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
+import { Context } from "../../utils/context";
 
-const Header = ({ collapsed, setCollapsed }) => {
+const Header = () => {
   const navigate = useNavigate();
+  const { heading } = useContext(Context);
   return (
-    <Layout.Header
-      style={{
-        padding: 0,
-        background: "#fff",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-      }}
-    >
-      <Button
-        type="text"
-        icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-        onClick={() => setCollapsed(!collapsed)}
-        style={{
-          fontSize: "16px",
-          width: 64,
-          height: 64,
-        }}
-      />
-
-      <Typography.Title style={{ margin: "auto" }}>
-        Manage Food
-      </Typography.Title>
+    <Layout.Header className="header-container">
+      <Typography.Title className="title-header">{heading}</Typography.Title>
 
       <Dropdown
         menu={{
@@ -51,6 +31,7 @@ const Header = ({ collapsed, setCollapsed }) => {
                     localStorage.removeItem("userType");
                     navigate("/login");
                   }}
+                  style={{ fontSize: "16px", padding: "20px" }}
                 >
                   Logout
                 </span>
@@ -59,10 +40,8 @@ const Header = ({ collapsed, setCollapsed }) => {
           ],
         }}
       >
-        <span
-          style={{ marginRight: "16px", display: "flex", alignItems: "center" }}
-        >
-          <BiSolidUserCircle size={40} />
+        <span className="icon-user">
+          <BiSolidUserCircle size={100} />
         </span>
       </Dropdown>
     </Layout.Header>

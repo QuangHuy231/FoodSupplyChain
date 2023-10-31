@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import "./ProduceProduct.scss";
 
 import axios from "axios";
@@ -7,6 +7,7 @@ import { MdDelete } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Context } from "../../../utils/context";
 
 const ProduceProduct = () => {
   const access_token = JSON.parse(localStorage.getItem("access_token"));
@@ -14,6 +15,7 @@ const ProduceProduct = () => {
   const [productionDate, setProductionDate] = useState("");
   const [expirationDate, setExpirationDate] = useState("");
   const [productionSteps, setProductionSteps] = useState("");
+  const { setHeading } = useContext(Context);
   const navigate = useNavigate();
   const { productCode } = useParams();
   const handleUploadImage = (e) => {
@@ -52,6 +54,7 @@ const ProduceProduct = () => {
         )
         .then((res) => {
           toast.success(res.data.message);
+          setHeading("Product In Stock");
           navigate("/producer/product-in-producer");
         });
     } catch (error) {
