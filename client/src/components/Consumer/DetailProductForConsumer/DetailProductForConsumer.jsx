@@ -4,7 +4,6 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "./DetailProductForConsumer.scss";
-import HistoryProduct from "../../HistoryProduct/HistoryProduct";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import HistoryProductForConsumer from "../HistoryProductForConsumer/HistoryProductForConsumer";
@@ -21,14 +20,15 @@ const DetailProductForConsumer = () => {
     });
   }, [access_token, productCode]);
   const handleGetUserDetail = (UserId) => {
-    try {
-      axios.get(`/consumer/get-user-info/${UserId}`).then((res) => {
+    axios
+      .get(`/consumer/get-user-info/${UserId}`)
+      .then((res) => {
         setUserInfo(res.data);
         setOpenDetailUser(true);
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message);
       });
-    } catch (error) {
-      toast.error(error.message);
-    }
   };
   return (
     <div className="detail-layout">

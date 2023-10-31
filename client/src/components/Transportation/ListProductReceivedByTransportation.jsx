@@ -98,7 +98,7 @@ const ListProductRecievedByTransportation = () => {
                     }}
                   >
                     <img
-                      src={`http://localhost:8080/ipfs/${product.imageProductInFamers}`}
+                      src={`http://localhost:8080/ipfs/${product.imagesProduct}`}
                       alt="image-product"
                     />
                   </div>

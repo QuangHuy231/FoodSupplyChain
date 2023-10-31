@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+/* eslint-disable jsx-a11y/img-redundant-alt */
+import React, { useContext, useEffect, useState } from "react";
 import { Col, Empty, Row } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
@@ -6,11 +7,13 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./Products.scss";
+import { Context } from "../../utils/context";
 
 const Products = () => {
   const access_token = JSON.parse(localStorage.getItem("access_token"));
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
+  const { setHeading } = useContext(Context);
   useEffect(() => {
     axios
       .get("/product", {
@@ -22,20 +25,19 @@ const Products = () => {
   }, [access_token]);
 
   const handleDeleteProduct = (productCode) => {
-    try {
-      axios
-        .delete(`/product/${productCode}`, {
-          headers: { authorization: `Bearer ${access_token}` },
-        })
-        .then((res) => {
-          toast.success(res.data.message);
-          setTimeout(() => {
-            window.location.reload();
-          }, 2000);
-        });
-    } catch (error) {
-      toast.error(error.message);
-    }
+    axios
+      .delete(`/product/${productCode}`, {
+        headers: { authorization: `Bearer ${access_token}` },
+      })
+      .then((res) => {
+        toast.success(res.data.message);
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      })
+      .catch((err) => {
+        toast.error(err.respone.data.message);
+      });
   };
   return (
     <>
@@ -48,7 +50,10 @@ const Products = () => {
               <div className="product-card">
                 <div
                   className="image-product"
-                  onClick={() => navigate(`/product/${product.productCode}`)}
+                  onClick={() => {
+                    setHeading("Product Details");
+                    navigate(`/product/${product.productCode}`);
+                  }}
                 >
                   <img
                     src={`http://localhost:8080/ipfs/${
@@ -61,7 +66,10 @@ const Products = () => {
                 </div>
                 <div
                   className="product-content"
-                  onClick={() => navigate(`/product/${product.productCode}`)}
+                  onClick={() => {
+                    setHeading("Product Details");
+                    navigate(`/product/${product.productCode}`);
+                  }}
                 >
                   <p>{product.productName}</p>
                   <div className="product-status">{product.status}</div>

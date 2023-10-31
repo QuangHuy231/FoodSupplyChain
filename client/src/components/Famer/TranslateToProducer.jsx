@@ -21,25 +21,24 @@ const TranslateToProducer = ({ productCode, open, setOpen }) => {
   }, [access_token]);
 
   const handleTranlateToProducer = () => {
-    try {
-      axios
-        .put(
-          `/famer/transfer-producer/${productCode}/${producer}`,
-          {},
-          {
-            headers: { authorization: `Bearer ${access_token}` },
-          }
-        )
-        .then((response) => {
-          setOpen(false);
-          toast.success(response.data.message);
-          setTimeout(() => {
-            window.location.reload();
-          }, 2000);
-        });
-    } catch (error) {
-      toast.error(error.message);
-    }
+    axios
+      .put(
+        `/famer/transfer-producer/${productCode}/${producer}`,
+        {},
+        {
+          headers: { authorization: `Bearer ${access_token}` },
+        }
+      )
+      .then((response) => {
+        setOpen(false);
+        toast.success(response.data.message);
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      })
+      .catch((error) => {
+        toast.error(error.response.data.message);
+      });
   };
 
   return (

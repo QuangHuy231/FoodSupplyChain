@@ -1,18 +1,10 @@
 import React, { useEffect, useState } from "react";
-import {
-  Button,
-  Drawer,
-  Form,
-  Input,
-  Select,
-  Space,
-  Table,
-  Typography,
-} from "antd";
+import { Button, Drawer, Select, Space, Table, Typography } from "antd";
 import axios from "axios";
 import { UserTypes } from "../../utils/UserType";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import "./ListUser.scss";
 
 const ListUser = () => {
   const [loading, setLoading] = useState(false);
@@ -34,129 +26,110 @@ const ListUser = () => {
 
   useEffect(() => {
     setLoading(true);
-    try {
-      axios
-        .get("/user", {
-          headers: { authorization: `Bearer ${access_token}` },
-        })
-        .then((res) => {
-          if (res.data.lenght === 0) {
-            setHasData(false);
-          }
-          setDataSource(res.data);
-          setLoading(false);
-        });
-    } catch (error) {
-      toast.error(error.message);
-    }
+    axios
+      .get("/user", {
+        headers: {
+          authorization: `Bearer ${access_token}`,
+        },
+      })
+      .then((res) => {
+        if (res.data.lenght === 0) {
+          setHasData(false);
+        }
+        setDataSource(res.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message);
+      });
   }, [access_token]);
 
   const handleDeleteUser = (UserId) => {
-    try {
-      axios
-        .delete(`/user/${UserId}`, {
-          headers: { authorization: `Bearer ${access_token}` },
-        })
-        .then((res) => {
-          toast.success(res.data.message);
-          setTimeout(() => {
-            window.location.reload();
-          }, 2000);
-        });
-    } catch (error) {
-      toast.error(error.message);
-    }
+    axios
+      .delete(`/user/${UserId}`, {
+        headers: { authorization: `Bearer ${access_token}` },
+      })
+      .then((res) => {
+        toast.success(res.data.message);
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message);
+      });
   };
 
   const handleOpenUpdate = (UserId) => {
-    try {
-      axios
-        .get(`/user/${UserId}`, {
-          headers: { authorization: `Bearer ${access_token}` },
-        })
-        .then((res) => {
-          setUserInfo(res.data);
-          setUpdateOpen(true);
-        });
-    } catch (error) {
-      toast.error(error.message);
-    }
+    axios
+      .get(`/user/${UserId}`, {
+        headers: { authorization: `Bearer ${access_token}` },
+      })
+      .then((res) => {
+        setUserInfo(res.data);
+        setUpdateOpen(true);
+      })
+      .catch((error) => {
+        toast.error(error.response.data.message);
+      });
   };
 
   const handleUpdateUser = (UserId) => {
-    try {
-      axios
-        .put(
-          `/user/${UserId}`,
-          {
-            UpdateUserName,
-            UpdateEmail,
-            UpdateUserType,
-            UpdateAddress,
-          },
-          {
-            headers: { authorization: `Bearer ${access_token}` },
-          }
-        )
-        .then((res) => {
-          toast.success(res.data.message);
-          setTimeout(() => {
-            window.location.reload();
-          }, 2000);
-        });
-    } catch (error) {
-      toast.error(error.massage);
-    }
+    axios
+      .put(
+        `/user/${UserId}`,
+        {
+          UpdateUserName,
+          UpdateEmail,
+          UpdateUserType,
+          UpdateAddress,
+        },
+        {
+          headers: { authorization: `Bearer ${access_token}` },
+        }
+      )
+      .then((res) => {
+        toast.success(res.data.message);
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message[0]);
+      });
   };
 
   const handleSubmit = () => {
-    try {
-      axios
-        .post(
-          "/auth/register",
-          {
-            UserName,
-            Email,
-            UserType,
-            Address,
-            Password,
-          },
-          {
-            headers: { authorization: `Bearer ${access_token}` },
-          }
-        )
-        .then((res) => {
-          toast.success("Create success");
-          setTimeout(() => {
-            window.location.reload();
-          }, 2000);
-        });
-    } catch (error) {
-      toast.error(error.message);
-    }
+    axios
+      .post(
+        "/auth/register",
+        {
+          UserName,
+          Email,
+          UserType,
+          Address,
+          Password,
+        },
+        {
+          headers: { authorization: `Bearer ${access_token}` },
+        }
+      )
+      .then((res) => {
+        toast.success("Create success");
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      })
+      .catch((error) => {
+        toast.error(error.response.data.message[0]);
+      });
   };
   return (
     <Space size={20} direction="vertical">
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
+      <div className="title-list-user">
         <Typography.Title>List Users</Typography.Title>
         <Button
-          style={{
-            float: "right",
-            padding: "20px",
-            fontSize: "16px",
-            display: "flex",
-            alignItems: "center",
-            color: "black",
-            border: "1px solid black",
-            boxShadow:
-              "rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px",
-          }}
+          className="button-create-user"
           onClick={() => {
             setCreateOpen(true);
           }}
@@ -168,11 +141,6 @@ const ListUser = () => {
       <Table
         loading={loading}
         bordered
-        style={{
-          borderRadius: "20px",
-          boxShadow:
-            "rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px",
-        }}
         columns={[
           { title: "User Id", dataIndex: "UserId" },
           {
@@ -196,15 +164,9 @@ const ListUser = () => {
             dataIndex: "UserId",
             key: "x",
             render: (UserId) => (
-              <div style={{ display: "flex", gap: "10px" }}>
+              <div className="action-layout">
                 <button
-                  style={{
-                    padding: "10px",
-                    borderRadius: "5px",
-                    background: "white",
-                    color: "black",
-                    cursor: "pointer",
-                  }}
+                  className="button-update"
                   onClick={() => {
                     handleOpenUpdate(UserId);
                   }}
@@ -212,13 +174,7 @@ const ListUser = () => {
                   Update
                 </button>
                 <button
-                  style={{
-                    padding: "10px",
-                    borderRadius: "5px",
-                    background: "white",
-                    color: "black",
-                    cursor: "pointer",
-                  }}
+                  className="button-delete"
                   onClick={() => handleDeleteUser(UserId)}
                 >
                   Delete
@@ -243,52 +199,58 @@ const ListUser = () => {
         }}
         maskClosable
       >
-        <Form
-          name="basic"
-          labelCol={{ span: 8 }}
-          wrapperCol={{ span: 16 }}
-          style={{
-            maxWidth: 600,
-            display: "flex",
-            flexDirection: "column",
-            gap: "20px",
-          }}
-          initialValues={{ remember: true }}
-        >
-          <Form.Item label="UserName" name="UserName">
-            <Input onChange={(e) => setUserName(e.target.value)} />
-          </Form.Item>
+        <div className="create-user-layout">
+          <div className="form-item">
+            <label>UserName:</label>
+            <input
+              type="text"
+              className="input"
+              onChange={(e) => setUserName(e.target.value)}
+            />
+          </div>
 
-          <Form.Item label="Email" name="Email">
-            <Input onChange={(e) => setEmail(e.target.value)} />
-          </Form.Item>
+          <div className="form-item">
+            <label>Email:</label>
+            <input
+              type="text"
+              className="input"
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
 
-          <Form.Item label="UserType" name="UserType">
-            <Select onChange={(e) => setUserType(e)}>
+          <div className="form-item">
+            <label>UserType:</label>
+            <Select className="select" onChange={(e) => setUserType(e)}>
               {UserTypes.map((userType) => (
                 <Select.Option key={userType.id} value={userType.value}>
                   {userType.value}
                 </Select.Option>
               ))}
             </Select>
-          </Form.Item>
+          </div>
 
-          <Form.Item label="Address" name="Address">
-            <Input onChange={(e) => setAddress(e.target.value)} />
-          </Form.Item>
-          <Form.Item label="Password" name="Password">
-            <Input
+          <div className="form-item">
+            <label>Address:</label>
+            <input
+              type="text"
+              className="input"
+              onChange={(e) => setAddress(e.target.value)}
+            />
+          </div>
+
+          <div className="form-item">
+            <label>Password:</label>
+            <input
               type="password"
+              className="input"
               onChange={(e) => setPassword(e.target.value)}
             />
-          </Form.Item>
+          </div>
 
-          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-            <Button type="primary" htmlType="submit" onClick={handleSubmit}>
-              Submit
-            </Button>
-          </Form.Item>
-        </Form>
+          <button className="button-create" onClick={handleSubmit}>
+            Create
+          </button>
+        </div>
       </Drawer>
 
       <Drawer
@@ -300,62 +262,52 @@ const ListUser = () => {
         }}
         maskClosable
       >
-        <Form
-          name="basic"
-          labelCol={{ span: 8 }}
-          wrapperCol={{ span: 16 }}
-          style={{
-            maxWidth: 600,
-            display: "flex",
-            flexDirection: "column",
-            gap: "20px",
-          }}
-          initialValues={{ remember: true }}
-        >
-          <Form.Item label="UserName" name="UserName">
-            <Input
-              placeholder={userInfo?.UserName}
+        <div className="create-user-layout">
+          <div className="form-item">
+            <label>UserName:</label>
+            <input
+              type="text"
+              className="input"
               onChange={(e) => setUpdateUserName(e.target.value)}
             />
-          </Form.Item>
+          </div>
 
-          <Form.Item label="Email" name="Email">
-            <Input
-              placeholder={userInfo?.Email}
+          <div className="form-item">
+            <label>Email:</label>
+            <input
+              type="text"
+              className="input"
               onChange={(e) => setUpdateEmail(e.target.value)}
             />
-          </Form.Item>
+          </div>
 
-          <Form.Item label="UserType" name="UserType">
-            <Select
-              placeholder={userInfo?.UserType}
-              onChange={(e) => setUpdateUserType(e)}
-            >
+          <div className="form-item">
+            <label>UserType:</label>
+            <Select className="select" onChange={(e) => setUpdateUserType(e)}>
               {UserTypes.map((userType) => (
                 <Select.Option key={userType.id} value={userType.value}>
                   {userType.value}
                 </Select.Option>
               ))}
             </Select>
-          </Form.Item>
+          </div>
 
-          <Form.Item label="Address" name="Address">
-            <Input
-              placeholder={userInfo?.Address}
+          <div className="form-item">
+            <label>Address:</label>
+            <input
+              type="text"
+              className="input"
               onChange={(e) => setUpdateAddress(e.target.value)}
             />
-          </Form.Item>
+          </div>
 
-          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-            <Button
-              type="primary"
-              htmlType="submit"
-              onClick={() => handleUpdateUser(userInfo.UserId)}
-            >
-              update
-            </Button>
-          </Form.Item>
-        </Form>
+          <button
+            className="button-update-form"
+            onClick={() => handleUpdateUser(userInfo.UserId)}
+          >
+            Update
+          </button>
+        </div>
       </Drawer>
     </Space>
   );

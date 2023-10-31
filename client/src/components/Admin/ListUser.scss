@@ -1,0 +1,111 @@
+.title-list-user {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  .button-create-user {
+    float: right;
+    padding: 20px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    color: rgb(0, 89, 255);
+    border: 1px solid black;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px,
+      rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
+      rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+  }
+}
+
+.action-layout {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  .button-update {
+    padding: 10px;
+    border-radius: 5px;
+    background: rgb(0, 217, 255);
+    color: black;
+    cursor: pointer;
+    color: white;
+    border: none;
+    outline: none;
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+  .button-delete {
+    padding: 10px;
+    border-radius: 5px;
+    background: rgb(255, 17, 0);
+    color: black;
+    cursor: pointer;
+    color: white;
+    border: none;
+    outline: none;
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+}
+
+.create-user-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 30px;
+  border: 1px solid black;
+  border-radius: 10px;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
+    rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+
+  .form-item {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    label {
+      font-size: 20px;
+      font-weight: 500;
+    }
+    .input {
+      padding: 20px;
+      font-size: 16px;
+      border-radius: 20px;
+      border: 1px solid rgb(141, 141, 141);
+    }
+    .select {
+      height: 50px;
+    }
+  }
+  .button-create {
+    padding: 20px;
+    width: 150px;
+    align-self: flex-end;
+    outline: none;
+    border: none;
+    border-radius: 20px;
+    font-size: 20px;
+    text-align: center;
+    background: rgb(0, 174, 255);
+    color: white;
+    cursor: pointer;
+    &:hover {
+      opacity: 0.6;
+    }
+  }
+  .button-update-form {
+    padding: 20px;
+    width: 150px;
+    align-self: flex-end;
+    outline: none;
+    border: none;
+    border-radius: 20px;
+    font-size: 20px;
+    text-align: center;
+    background: rgb(255, 0, 0);
+    color: white;
+    cursor: pointer;
+    &:hover {
+      opacity: 0.6;
+    }
+  }
+}

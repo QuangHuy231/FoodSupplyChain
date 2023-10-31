@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/img-redundant-alt */
 import React, { useContext, useState } from "react";
 import "./ProduceProduct.scss";
 
@@ -23,18 +24,18 @@ const ProduceProduct = () => {
     const data = new FormData();
     // Append only the first file to the FormData object
     data.append("image", files[0]);
-    try {
-      axios
-        .post("/product/upload", data, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
-        .then((res) => {
-          const filename = res.data.cid;
-          setImageAsset(filename);
-        });
-    } catch (error) {
-      toast.error(error.message);
-    }
+
+    axios
+      .post("/product/upload", data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      })
+      .then((res) => {
+        const filename = res.data.cid;
+        setImageAsset(filename);
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message);
+      });
   };
 
   const handleCreate = () => {
@@ -58,7 +59,7 @@ const ProduceProduct = () => {
           navigate("/producer/product-in-producer");
         });
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response.data.message);
     }
   };
   return (

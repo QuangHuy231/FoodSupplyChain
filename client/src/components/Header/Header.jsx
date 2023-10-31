@@ -1,12 +1,8 @@
 import React, { useContext } from "react";
 import { Dropdown, Layout, Typography } from "antd";
 import "./Header.scss";
-import { Button } from "antd";
-import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  LogoutOutlined,
-} from "@ant-design/icons";
+
+import { LogoutOutlined } from "@ant-design/icons";
 import { BiSolidUserCircle } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import { Context } from "../../utils/context";
@@ -23,7 +19,7 @@ const Header = () => {
           items: [
             {
               key: "1",
-              icon: <LogoutOutlined />,
+              icon: <LogoutOutlined style={{ fontSize: "30px" }} />,
               label: (
                 <span
                   onClick={() => {
@@ -31,7 +27,7 @@ const Header = () => {
                     localStorage.removeItem("userType");
                     navigate("/login");
                   }}
-                  style={{ fontSize: "16px", padding: "20px" }}
+                  style={{ fontSize: "24px", padding: "20px" }}
                 >
                   Logout
                 </span>

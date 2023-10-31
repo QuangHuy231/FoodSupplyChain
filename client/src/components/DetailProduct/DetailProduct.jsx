@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
-import { Card, Drawer, Form, Input } from "antd";
+import { Card, Drawer, Form } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -34,7 +34,7 @@ const DetailProduct = () => {
           setOpenDetailUser(true);
         });
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response.data.message);
     }
   };
   return (

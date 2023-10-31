@@ -22,28 +22,27 @@ const TranslateToRetailer = ({ productCode, open, setOpen }) => {
   }, [access_token]);
 
   const handleTranlateToRetailer = () => {
-    try {
-      axios
-        .put(
-          `/transportation/transfer-product-to-retailer/${productCode}`,
-          {
-            retailerId: retailer,
-            vehicle: vehicle,
-          },
-          {
-            headers: { authorization: `Bearer ${access_token}` },
-          }
-        )
-        .then((response) => {
-          toast.success(response.data.message);
-          setOpen(false);
-          setTimeout(() => {
-            window.location.reload();
-          }, 2000);
-        });
-    } catch (error) {
-      toast.error(error.message);
-    }
+    axios
+      .put(
+        `/transportation/transfer-product-to-retailer/${productCode}`,
+        {
+          retailerId: retailer,
+          vehicle: vehicle,
+        },
+        {
+          headers: { authorization: `Bearer ${access_token}` },
+        }
+      )
+      .then((response) => {
+        toast.success(response.data.message);
+        setOpen(false);
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      })
+      .catch((error) => {
+        toast.error(error.response.data.message);
+      });
   };
 
   return (

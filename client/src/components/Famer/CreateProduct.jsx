@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/img-redundant-alt */
 import React, { useContext, useState } from "react";
 import "./CreateProduct.scss";
 
@@ -22,43 +23,42 @@ const CreateProduct = () => {
     const data = new FormData();
     // Append only the first file to the FormData object
     data.append("image", files[0]);
-    try {
-      axios
-        .post("/product/upload", data, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
-        .then((res) => {
-          const filename = res.data.cid;
-          setImageAsset(filename);
-        });
-    } catch (error) {
-      toast.error(error.message);
-    }
+
+    axios
+      .post("/product/upload", data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      })
+      .then((res) => {
+        const filename = res.data.cid;
+        setImageAsset(filename);
+      })
+      .catch((err) => {
+        toast.error(err.respone.data.message);
+      });
   };
 
   const handleCreate = () => {
-    try {
-      axios
-        .post(
-          "/famer/create-product",
-          {
-            productName,
-            plantDate,
-            harvestDate,
-            images: imageAsset,
-          },
-          {
-            headers: { authorization: `Bearer ${access_token}` },
-          }
-        )
-        .then((res) => {
-          toast.success(res.data.message);
-          setHeading("List Products");
-          navigate("/famer");
-        });
-    } catch (error) {
-      toast.error(error.message);
-    }
+    axios
+      .post(
+        "/famer/create-product",
+        {
+          productName,
+          plantDate,
+          harvestDate,
+          images: imageAsset,
+        },
+        {
+          headers: { authorization: `Bearer ${access_token}` },
+        }
+      )
+      .then((res) => {
+        toast.success(res.data.message);
+        setHeading("List Products");
+        navigate("/famer");
+      })
+      .catch((err) => {
+        toast.error(err.respone.data.message[0]);
+      });
   };
   return (
     <div className="create-layout">
