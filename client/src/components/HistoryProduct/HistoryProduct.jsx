@@ -24,7 +24,7 @@ const HistoryProduct = ({ productCode }) => {
           .slice()
           .reverse()
           .map((productHistory, index) => (
-            <Col span={12}>
+            <Col span={8}>
               <div className="card-product">
                 <div className="title-card">Step {index + 1}</div>
                 <div>

@@ -64,7 +64,7 @@ const CreateProduct = () => {
     <div className="create-layout">
       <div className="title">Create Product</div>
       <div className="form-layout">
-        <div className="form">
+        <div className="form-create">
           <div className="product-name">
             <label>Product Name: </label>
             <input
@@ -72,7 +72,7 @@ const CreateProduct = () => {
               onChange={(e) => setProductName(e.target.value)}
             />
           </div>
-          <div className="date-form">
+          <div className="date-form-create">
             <div className="plantDate">
               <label>PlantDate: </label>
               <input

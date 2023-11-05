@@ -1,28 +1,33 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
-import { Card, Drawer, Form } from "antd";
+
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "./DetailProduct.scss";
 import HistoryProduct from "../HistoryProduct/HistoryProduct";
+import { Drawer } from "antd";
 import { toast } from "react-toastify";
+import { AiOutlineRight } from "react-icons/ai";
 import "react-toastify/dist/ReactToastify.css";
 
 const DetailProduct = () => {
   const { productCode } = useParams();
-  const [openDetailUser, setOpenDetailUser] = useState(false);
-  const [userInfo, setUserInfo] = useState({});
   const access_token = JSON.parse(localStorage.getItem("access_token"));
   const [detailProduct, setDetailProduct] = useState({});
+  const [openDetailUser, setOpenDetailUser] = useState(false);
+  const [userInfo, setUserInfo] = useState({});
+
   useEffect(() => {
-    axios
-      .get(`/product/${productCode}`, {
+    const fetchProduct = async () => {
+      const { data } = await axios.get(`/product/${productCode}`, {
         headers: { authorization: `Bearer ${access_token}` },
-      })
-      .then((res) => {
-        setDetailProduct(res.data);
       });
+      setDetailProduct(data);
+    };
+
+    fetchProduct();
   }, [access_token, productCode]);
+
   const handleGetUserDetail = (UserId) => {
     try {
       axios
@@ -37,125 +42,124 @@ const DetailProduct = () => {
       toast.error(error.response.data.message);
     }
   };
+
   return (
-    <div>
-      <div className="product-image">
-        <img
-          src={`http://localhost:8080/ipfs/${
-            detailProduct.imagesProduct
-              ? detailProduct.imagesProduct
-              : detailProduct.imageProductInFamers
-          }`}
-          alt="image product"
-          className="image"
-        />
+    <div className="layout-product-detail">
+      <div className="product-detail">
+        <div className="product-image">
+          <img
+            src={`http://localhost:8080/ipfs/${
+              detailProduct.imagesProduct
+                ? detailProduct.imagesProduct
+                : detailProduct.imageProductInFamers
+            }`}
+            alt="image product"
+            className="image"
+          />
+          <HistoryProduct productCode={productCode} />
+        </div>
+        <div className="info-content">
+          <div className="product-info">
+            <div className="title-card">Product Info</div>
+            <div className="card-content">
+              <div className="card-item">
+                <p>Product Name</p>
+                <span>{detailProduct.productName}</span>
+              </div>
+              <div className="card-item">
+                <p>Status</p>
+                <span>{detailProduct.status}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="product-info">
+            <div className="title-card">Famer Info</div>
+            <div className="card-content">
+              <div className="card-item">
+                <p>Famer Id</p>
+                <span
+                  className="user"
+                  onClick={() => handleGetUserDetail(detailProduct.famerId)}
+                >
+                  {detailProduct.famerId} <AiOutlineRight />
+                </span>
+              </div>
+              <div className="card-item">
+                <p>PlantDate</p>
+                <span>{detailProduct.plantDate}</span>
+              </div>
+              <div className="card-item">
+                <p>HarvestDate</p>
+                <span>{detailProduct.harvestDate}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="product-info">
+            <div className="title-card">Producer Info</div>
+            <div className="card-content">
+              <div className="card-item">
+                <p>Producer Id</p>
+                <span
+                  className="user"
+                  onClick={() => handleGetUserDetail(detailProduct.producerId)}
+                >
+                  {detailProduct.producerId} <AiOutlineRight />
+                </span>
+              </div>
+              <div className="card-item">
+                <p>ProductionDate</p>
+                <span>{detailProduct.productionDate}</span>
+              </div>
+              <div className="card-item">
+                <p>ExpirationDate</p>
+                <span>{detailProduct.expirationDate}</span>
+              </div>
+              <div className="card-item">
+                <p>ProductionSteps</p>
+                <span>{detailProduct.productionSteps}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="product-info">
+            <div className="title-card">Transport Info</div>
+            <div className="card-content">
+              <div className="card-item">
+                <p>Transport Id</p>
+                <span
+                  className="user"
+                  onClick={() =>
+                    handleGetUserDetail(detailProduct.transportationId)
+                  }
+                >
+                  {detailProduct.transportationId} <AiOutlineRight />
+                </span>
+              </div>
+              <div className="card-item">
+                <p>Vehicle</p>
+                <span>{detailProduct.vehicle}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="product-info">
+            <div className="title-card">Retailer Info</div>
+            <div className="card-content">
+              <div className="card-item">
+                <p>Retailer Id</p>
+                <span
+                  className="user"
+                  onClick={() => handleGetUserDetail(detailProduct.retailerId)}
+                >
+                  {detailProduct.retailerId} <AiOutlineRight />
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="product-info">
-        <Card
-          title="Product Info"
-          bordered={false}
-          style={{
-            width: 300,
-          }}
-        >
-          <p>
-            <label>Product Name: </label>
-            {detailProduct.productName}
-          </p>
-          <p className="status-field">
-            <label>Status: </label>
-            <div className="status">{detailProduct.status}</div>
-          </p>
-        </Card>
-
-        <Card
-          title="Famer Info"
-          bordered={false}
-          style={{
-            width: 300,
-          }}
-        >
-          <p>
-            <label>FamerId: </label>
-            <span
-              onClick={() => {
-                handleGetUserDetail(detailProduct.famerId);
-              }}
-            >
-              {detailProduct.famerId}
-            </span>
-          </p>
-          <p>
-            <label>PlantDate: </label>
-            {detailProduct.plantDate}
-          </p>
-          <p>
-            <label>HarvestDate: </label>
-            {detailProduct.harvestDate}
-          </p>
-        </Card>
-
-        <Card title="Producer Info" bordered={false} style={{ width: 300 }}>
-          <p>
-            <label>ProducerId: </label>
-            <span
-              onClick={() => {
-                handleGetUserDetail(detailProduct.producerId);
-              }}
-            >
-              {detailProduct.producerId}
-            </span>
-          </p>
-          <p>
-            <label>ProductionDate: </label>
-            {detailProduct.productionDate}
-          </p>
-          <p>
-            <label>ExpirationDate: </label>
-            {detailProduct.expirationDate}
-          </p>
-          <p>
-            <label>ProductionSteps: </label>
-            {detailProduct.productionSteps}
-          </p>
-        </Card>
-
-        <Card
-          title="Transportation info"
-          bordered={false}
-          style={{ width: 300 }}
-        >
-          <p>
-            <label>Transportation: </label>
-            <span
-              onClick={() => {
-                handleGetUserDetail(detailProduct.transportationId);
-              }}
-            >
-              {detailProduct.transportationId}
-            </span>
-          </p>
-          <p>
-            <label>Vehicle: </label>
-            {detailProduct.vehicle}
-          </p>
-        </Card>
-
-        <Card title="Retailer" bordered={false} style={{ width: 300 }}>
-          <p>
-            <label>RetailerId: </label>
-            <span
-              onClick={() => {
-                handleGetUserDetail(detailProduct.retailerId);
-              }}
-            >
-              {detailProduct.retailerId}
-            </span>
-          </p>
-        </Card>
-      </div>
-      <HistoryProduct productCode={productCode} />
-
       <Drawer
         size="large"
         title="User Profile"
@@ -165,34 +169,27 @@ const DetailProduct = () => {
         }}
         maskClosable
       >
-        <Form
-          name="basic"
-          labelCol={{ span: 8 }}
-          wrapperCol={{ span: 16 }}
-          style={{
-            maxWidth: 600,
-            display: "flex",
-            flexDirection: "column",
-            gap: "20px",
-          }}
-          initialValues={{ remember: true }}
-        >
-          <Form.Item label="UserName" name="UserName">
-            {userInfo.UserName}
-          </Form.Item>
+        <div className="create-user-layout">
+          <div className="form-item">
+            <label>UserName:</label>
+            <div className="input">{userInfo?.UserName}</div>
+          </div>
 
-          <Form.Item label="Email" name="Email">
-            {userInfo.Email}
-          </Form.Item>
+          <div className="form-item">
+            <label>Email:</label>
+            <div className="input">{userInfo?.Email}</div>
+          </div>
 
-          <Form.Item label="UserType" name="UserType">
-            {userInfo.UserType}
-          </Form.Item>
+          <div className="form-item">
+            <label>UserType:</label>
+            <div className="input">{userInfo?.UserType}</div>
+          </div>
 
-          <Form.Item label="Address" name="Address">
-            {userInfo.Address}
-          </Form.Item>
-        </Form>
+          <div className="form-item">
+            <label>Address:</label>
+            <div className="input">{userInfo?.Address}</div>
+          </div>
+        </div>
       </Drawer>
     </div>
   );

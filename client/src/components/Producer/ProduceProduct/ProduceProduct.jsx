@@ -66,8 +66,8 @@ const ProduceProduct = () => {
     <div className="create-layout">
       <div className="title">Produce Product</div>
       <div className="form-layout">
-        <div className="form">
-          <div className="date-form">
+        <div className="form-produce">
+          <div className="date-form-produce">
             <div className="plantDate">
               <label>ProductionDate: </label>
               <input

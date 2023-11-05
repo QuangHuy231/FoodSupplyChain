@@ -268,6 +268,7 @@ const ListUser = () => {
             <input
               type="text"
               className="input"
+              value={userInfo?.UserName}
               onChange={(e) => setUpdateUserName(e.target.value)}
             />
           </div>
@@ -277,13 +278,18 @@ const ListUser = () => {
             <input
               type="text"
               className="input"
+              value={userInfo?.Email}
               onChange={(e) => setUpdateEmail(e.target.value)}
             />
           </div>
 
           <div className="form-item">
             <label>UserType:</label>
-            <Select className="select" onChange={(e) => setUpdateUserType(e)}>
+            <Select
+              className="select"
+              onChange={(e) => setUpdateUserType(e)}
+              value={userInfo?.UserType}
+            >
               {UserTypes.map((userType) => (
                 <Select.Option key={userType.id} value={userType.value}>
                   {userType.value}
@@ -297,6 +303,7 @@ const ListUser = () => {
             <input
               type="text"
               className="input"
+              value={userInfo?.Address}
               onChange={(e) => setUpdateAddress(e.target.value)}
             />
           </div>

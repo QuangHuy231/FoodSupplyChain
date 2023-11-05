@@ -19,16 +19,16 @@
     justify-content: space-around;
     height: 300px;
 
-    .form {
+    .form-produce {
       padding: 10px;
       display: flex;
       flex-direction: column;
-      align-items: center;
       gap: 20px;
+      width: 300px;
       .product-name {
         display: flex;
+        flex-direction: column;
         gap: 4px;
-        align-items: center;
         label {
           font-size: 18px;
           font-weight: 600;
@@ -42,15 +42,14 @@
         }
       }
     }
-    .date-form {
+    .date-form-produce {
       display: flex;
       flex-direction: column;
-      align-items: center;
       gap: 10px;
       .plantDate {
         display: flex;
         gap: 4px;
-        align-items: center;
+        flex-direction: column;
         label {
           font-size: 18px;
           font-weight: 600;
@@ -66,7 +65,7 @@
       .harvestDate {
         display: flex;
         gap: 4px;
-        align-items: center;
+        flex-direction: column;
         label {
           font-size: 18px;
           font-weight: 600;
@@ -86,6 +85,7 @@
     flex-direction: column;
     justify-content: center;
     gap: 20px;
+    width: 500px;
     .title-upload {
       font-size: 16px;
       font-weight: 600;
